@@ -3,14 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>IELTS Mock Test</title>
-<body>
 
-<script>
-  const userEmail = localStorage.getItem("user_email");
-  if (!userEmail) {
-    window.location.replace("register.html");
-  }
-</script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -29,12 +22,29 @@
 </head>
 
 <body>
-  <h1>IELTS Mock Test Platform</h1>
 
-  <a href="reading.html">Reading</a>
-  <a href="listening.html">Listening</a>
-  <a href="writing.html">Writing</a>
-  <a href="speaking.html">Speaking</a>
-  <a href="full-mock.html">Full Mock</a>
+<script>
+  const userEmail = localStorage.getItem("user_email");
+  if (!userEmail) {
+    window.location.replace("register.html");
+  }
+</script>
+
+<h1>IELTS Mock Test</h1>
+
+<a href="reading.html">📘 Reading</a>
+<a href="listening.html">🎧 Listening</a>
+<a href="writing.html">✍️ Writing</a>
+<a href="speaking.html">🎤 Speaking</a>
+
+<button onclick="logout()">Logout</button>
+
+<script>
+  function logout() {
+    localStorage.clear();
+    window.location.replace("register.html");
+  }
+</script>
+
 </body>
 </html>
