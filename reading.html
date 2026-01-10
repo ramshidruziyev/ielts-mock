@@ -1,184 +1,161 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>IELTS Reading</title>
+  <meta charset="UTF-8" />
+  <title>IELTS Reading Test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<style>
-body{margin:0;font-family:Arial;background:#f2f5f9}
-header{
-  background:#1f4fd8;
-  color:#fff;
-  padding:15px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center
-}
-.container{padding:15px}
-.card{
-  background:#fff;
-  border-radius:12px;
-  padding:15px;
-  margin-bottom:15px
-}
-.badge{
-  padding:5px 12px;
-  border-radius:20px;
-  font-size:12px;
-  display:inline-block;
-  margin-bottom:8px
-}
-.free{background:#2ecc71;color:#fff}
-.premium{background:#9b59b6;color:#fff}
-button{
-  width:100%;
-  padding:12px;
-  border:none;
-  border-radius:8px;
-  background:#1f4fd8;
-  color:#fff;
-  font-size:16px
-}
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f4f6fb;
+      color: #222;
+    }
 
-.test{
-  display:flex;
-  height:calc(100vh - 60px)
-}
-.passage{
-  width:55%;
-  background:#fff;
-  padding:20px;
-  overflow:auto
-}
-.questions{
-  width:45%;
-  padding:20px;
-  overflow:auto;
-  border-left:2px solid #ddd
-}
-.hidden{display:none}
-</style>
+    header {
+      background: #1f4fd8;
+      color: white;
+      padding: 14px;
+      font-size: 18px;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    #timer {
+      background: white;
+      color: #1f4fd8;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+
+    .container {
+      padding: 15px;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    #testTitle {
+      margin-bottom: 10px;
+    }
+
+    .layout {
+      display: flex;
+      gap: 15px;
+    }
+
+    #passage {
+      flex: 1;
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      line-height: 1.6;
+      white-space: pre-line;
+      height: 70vh;
+      overflow-y: auto;
+    }
+
+    #questions {
+      flex: 1;
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      height: 70vh;
+      overflow-y: auto;
+    }
+
+    .question {
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      margin-top: 6px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    label {
+      display: block;
+      margin: 6px 0;
+      cursor: pointer;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 15px;
+      padding: 14px;
+      background: #1f4fd8;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #173cb3;
+    }
+
+    #result {
+      margin-top: 20px;
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        flex-direction: column;
+      }
+
+      #passage,
+      #questions {
+        height: auto;
+      }
+    }
+  </style>
 </head>
-
 <body>
 
-<header>
-  <div id="title">📘 IELTS Reading Tests</div>
-  <div id="timer"></div>
-</header>
+  <!-- HEADER -->
+  <header>
+    <div>📘 IELTS Reading</div>
+    <div id="timer">20:00</div>
+  </header>
 
-<!-- PASSAGE LIST -->
-<div id="list" class="container"></div>
+  <!-- CONTENT -->
+  <div class="container">
+    <h2 id="testTitle">Loading...</h2>
 
-<!-- TEST VIEW -->
-<div id="test" class="test hidden">
-  <div class="passage" id="passageText"></div>
-  <div class="questions">
-    <form id="quiz"></form>
-    <br>
-    <button onclick="submitTest()">Submit Answers</button>
-    <p id="result"></p>
+    <div class="layout">
+      <!-- PASSAGE -->
+      <div id="passage">
+        Loading passage...
+      </div>
+
+      <!-- QUESTIONS -->
+      <div id="questions">
+        Loading questions...
+      </div>
+    </div>
+
+    <!-- SUBMIT -->
+    <button id="submitBtn">Submit Answers</button>
+
+    <!-- RESULT -->
+    <div id="result"></div>
   </div>
-</div>
 
-<script>
-// ================= PASSAGE DATA =================
-const passages = [
-{
-  id:1,
-  title:"Mental Gymnastics",
-  type:"free",
-  time:20,
-  text:`
-  <p><b>A.</b> The working day has just started at the head office of Barclays Bank...</p>
-  <p><b>B.</b> Today's workout, organized by a company called the Mind Gym...</p>
-  <p><b>C.</b> It's easy to poke fun...</p>
-  `,
-  questions:[
-    {
-      q:"Mind Gym coach instructed employees to imagine that they are the building.",
-      options:["TRUE","FALSE","NOT GIVEN"],
-      a:"FALSE"
-    },
-    {
-      q:"According to Mind Gym, scientific research supports their sessions.",
-      options:["TRUE","FALSE","NOT GIVEN"],
-      a:"TRUE"
-    }
-  ]
-}
-];
-
-// ================= RENDER LIST =================
-const list=document.getElementById("list");
-
-passages.forEach(p=>{
-  list.innerHTML+=`
-  <div class="card">
-    <span class="badge ${p.type}">${p.type.toUpperCase()}</span>
-    <h3>${p.title}</h3>
-    <button onclick="startTest(${p.id})">Start</button>
-  </div>
-  `;
-});
-
-// ================= START TEST =================
-let current,seconds,interval;
-
-function startTest(id){
-  current=passages.find(p=>p.id===id);
-  list.classList.add("hidden");
-  document.getElementById("test").classList.remove("hidden");
-  document.getElementById("title").innerText=current.title;
-
-  seconds=current.time*60;
-  runTimer();
-
-  document.getElementById("passageText").innerHTML=current.text;
-  const quiz=document.getElementById("quiz");
-  quiz.innerHTML="";
-
-  current.questions.forEach((x,i)=>{
-    quiz.innerHTML+=`
-    <p>${i+1}. ${x.q}</p>
-    ${x.options.map(o=>`
-      <label>
-        <input type="radio" name="q${i}" value="${o}"> ${o}
-      </label><br>
-    `).join("")}
-    <br>
-    `;
-  });
-}
-
-// ================= TIMER =================
-function runTimer(){
-  interval=setInterval(()=>{
-    seconds--;
-    document.getElementById("timer").innerText=
-      Math.floor(seconds/60)+":"+(seconds%60).toString().padStart(2,"0");
-    if(seconds<=0){
-      clearInterval(interval);
-      submitTest();
-    }
-  },1000);
-}
-
-// ================= SUBMIT =================
-function submitTest(){
-  clearInterval(interval);
-  let score=0;
-
-  current.questions.forEach((q,i)=>{
-    const a=document.querySelector(`input[name=q${i}]:checked`);
-    if(a && a.value===q.a) score++;
-  });
-
-  document.getElementById("result").innerText=
-    `Correct answers: ${score} / ${current.questions.length}`;
-}
-</script>
+  <!-- SCRIPT -->
+  <script src="reading.js"></script>
 
 </body>
 </html>
