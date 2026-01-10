@@ -1,107 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<title>Register – IELTS Mock</title>
+  <meta charset="UTF-8">
+  <title>Register – IELTS Mock</title>
 
-<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
-<script>
-(function(){
-  emailjs.init("w9SojUF4bMIwIk8F8");
-})();
-</script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fb;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
 
-<style>
-body {
-  font-family: Arial, sans-serif;
-  background:#f5f7fb;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-}
-.box {
-  background:#fff;
-  padding:25px;
-  width:320px;
-  border-radius:8px;
-  box-shadow:0 0 10px rgba(0,0,0,.1);
-  text-align:center;
-}
-input, button {
-  width:100%;
-  padding:10px;
-  margin-top:10px;
-}
-button {
-  background:#2563eb;
-  color:#fff;
-  border:none;
-  cursor:pointer;
-}
-.hidden { display:none; }
-</style>
+    .box {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      width: 320px;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      font-size: 15px;
+    }
+
+    button {
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #1e4ed8;
+    }
+
+    #otpBox {
+      display: none;
+    }
+
+    #msg {
+      margin-top: 10px;
+      color: green;
+      font-size: 14px;
+    }
+  </style>
 </head>
-
 <body>
+
 <div class="box">
+  <h2>IELTS Mock</h2>
+  <p>Email orqali tasdiqlang</p>
 
-<h2>Register</h2>
+  <input type="email" id="email" placeholder="Email kiriting">
 
-<div id="stepEmail">
-  <input type="email" id="email" placeholder="Enter your email" required />
-  <button onclick="sendOTP()">Send OTP</button>
+  <button onclick="sendOTP()">Kod yuborish</button>
+
+  <div id="otpBox">
+    <input type="text" id="otp" placeholder="6 xonali kod">
+    <button onclick="verifyOTP()">Tasdiqlash</button>
+  </div>
+
+  <p id="msg"></p>
 </div>
 
-<div id="stepOTP" class="hidden">
-  <input type="text" id="otp" placeholder="Enter 6-digit code" />
-  <button onclick="verifyOTP()">Verify</button>
-</div>
-
-<p id="msg"></p>
-
-</div>
+<!-- EmailJS -->
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 
 <script>
-let generatedOTP = "";
-let otpExpire = 0;
+  emailjs.init("w9SojUF4bMIwIk8F8"); // PUBLIC KEY
 
-function sendOTP() {
-  const email = document.getElementById("email").value;
-  if (!email) return alert("Email kiriting");
+  let generatedOTP = "";
 
-  generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
-  otpExpire = Date.now() + 5 * 60 * 1000;
+  function sendOTP() {
+    const email = document.getElementById("email").value;
+    if (!email) {
+      alert("Email kiriting");
+      return;
+    }
 
-  emailjs.send("service_jucfowm", "template_8r58roz", {
-    email: email,
-    otp: generatedOTP
-  }).then(() => {
-    localStorage.setItem("pending_email", email);
-    document.getElementById("stepEmail").classList.add("hidden");
-    document.getElementById("stepOTP").classList.remove("hidden");
-    document.getElementById("msg").innerText = "OTP emailga yuborildi";
-  }, () => {
-    alert("Email yuborilmadi");
-  });
-}
+    generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
 
-function verifyOTP() {
-  const otp = document.getElementById("otp").value;
-
-  if (Date.now() > otpExpire) {
-    return alert("Kod muddati tugadi");
+    emailjs.send("service_jucfowm", "template_8r58roz", {
+      email: email,
+      passcode: generatedOTP,
+      time: "15 minutes"
+    }).then(() => {
+      document.getElementById("msg").innerText =
+        "Kod emailingizga yuborildi";
+      document.getElementById("otpBox").style.display = "block";
+    }).catch((error) => {
+      alert("Email yuborilmadi");
+      console.log(error);
+    });
   }
 
-  if (otp === generatedOTP) {
-    localStorage.setItem("user_email", localStorage.getItem("pending_email"));
-    localStorage.setItem("register_time", Date.now());
-    localStorage.removeItem("pending_email");
-    window.location.href = "index.html";
-  } else {
-    alert("Noto‘g‘ri kod");
+  function verifyOTP() {
+    const userOTP = document.getElementById("otp").value;
+
+    if (userOTP === generatedOTP) {
+      localStorage.setItem("user_email",
+        document.getElementById("email").value);
+      localStorage.setItem("register_time", Date.now());
+
+      window.location.href = "index.html";
+    } else {
+      alert("Kod noto‘g‘ri");
+    }
   }
-}
 </script>
 
 </body>
