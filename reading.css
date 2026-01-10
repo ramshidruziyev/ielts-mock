@@ -1,0 +1,19 @@
+body { margin:0; font-family:Arial; background:#f4f6f8 }
+header {
+  background:#1f4fd8; color:#fff;
+  padding:15px; display:flex;
+  justify-content:space-between
+}
+.container { display:flex; height:calc(100vh - 60px) }
+.passage { width:55%; padding:20px; background:#fff; overflow:auto }
+.questions {
+  width:45%; padding:20px; overflow:auto;
+  border-left:2px solid #ddd
+}
+mark { background: yellow; }
+button {
+  width:100%; padding:12px;
+  background:#1f4fd8; color:white;
+  border:none; border-radius:6px;
+  font-size:16px
+}
