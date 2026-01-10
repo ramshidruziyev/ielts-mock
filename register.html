@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Register – IELTS Mock</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fb;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .box {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      width: 300px;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+    }
+    button {
+      background: #2563eb;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="box">
+    <h2>Register</h2>
+    <input type="email" id="email" placeholder="Email" required />
+    <button onclick="register()">Continue</button>
+  </div>
+
+  <script>
+    function register() {
+      const email = document.getElementById("email").value;
+      if (!email) {
+        alert("Email kiriting");
+        return;
+      }
+      localStorage.setItem("user_email", email);
+      localStorage.setItem("register_time", Date.now());
+      window.location.href = "index.html";
+    }
+  </script>
+</body>
+</html>
