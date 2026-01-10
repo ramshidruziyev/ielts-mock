@@ -1,4 +1,4 @@
-const readingData = {
+export const readingData = {
   id: "p001",
   title: "Museum Blockbuster",
   timeLimitMinutes: 20,
@@ -22,59 +22,22 @@ H. Perhaps the best pathway is to balance both blockbusters and regular exhibiti
 `,
 
   questions: [
-    {
-      id: 1,
-      type: "paragraph_matching",
-      text: "A reason for changing the exhibition programs.",
-      answer: "C"
-    },
-    {
-      id: 2,
-      type: "paragraph_matching",
-      text: "The time people have to wait in a queue in order to enjoy exhibitions.",
-      answer: "A"
-    },
-    {
-      id: 3,
-      type: "paragraph_matching",
-      text: "Terms people used when referring to blockbuster.",
-      answer: "B"
-    },
-    {
-      id: 4,
-      type: "paragraph_matching",
-      text: "There was some controversy over confining target groups of blockbuster.",
-      answer: "B"
-    },
+    // Questions 1–4
+    { id: 1, type: "paragraph", text: "A reason for changing the exhibition programs.", answer: "C" },
+    { id: 2, type: "paragraph", text: "The time people have to wait in a queue in order to enjoy exhibitions.", answer: "A" },
+    { id: 3, type: "paragraph", text: "Terms people used when referring to blockbuster.", answer: "B" },
+    { id: 4, type: "paragraph", text: "There was some controversy over confining target groups of blockbuster.", answer: "B" },
 
-    {
-      id: 5,
-      type: "summary",
-      text: "Instead of being visitors, people turned out to be ____.",
-      answer: "customers"
-    },
-    {
-      id: 6,
-      type: "summary",
-      text: "Business nous and ____ were essential requirements.",
-      answer: "public relation skills"
-    },
-    {
-      id: 7,
-      type: "summary",
-      text: "____ has contributed to linking museums and tourism.",
-      answer: "museology"
-    },
-    {
-      id: 8,
-      type: "summary",
-      text: "Museums are seen mainly as ____.",
-      answer: "tourist attractions"
-    },
+    // Questions 5–8 (Summary)
+    { id: 5, type: "summary", text: "Instead of being visitors, people turned out to be ____.", answer: "customers" },
+    { id: 6, type: "summary", text: "Business nous and ____ were essential requirements.", answer: "public relation skills" },
+    { id: 7, type: "summary", text: "____ has contributed to linking museums and tourism.", answer: "museology" },
+    { id: 8, type: "summary", text: "Museums are seen mainly as ____.", answer: "tourist attractions" },
 
+    // Questions 9–10
     {
       id: 9,
-      type: "multiple_choice",
+      type: "multi",
       text: "Which TWO advantages are mentioned?",
       options: {
         A: "To offer sufficient money to repair architectures.",
@@ -86,9 +49,10 @@ H. Perhaps the best pathway is to balance both blockbusters and regular exhibiti
       answer: ["A", "D"]
     },
 
+    // Questions 11–13
     {
       id: 11,
-      type: "multiple_choice",
+      type: "multi",
       text: "Which THREE disadvantages are mentioned?",
       options: {
         A: "People hesitate to choose exhibitions.",
@@ -103,4 +67,47 @@ H. Perhaps the best pathway is to balance both blockbusters and regular exhibiti
   ]
 };
 
-export default readingData;
+/* =========================
+   NATIJANI HISOBLASH LOGIKASI
+   ========================= */
+
+export function calculateResult(userAnswers) {
+  let correct = 0;
+
+  readingData.questions.forEach(q => {
+    const user = userAnswers[q.id];
+    if (!user) return;
+
+    if (Array.isArray(q.answer)) {
+      if (
+        Array.isArray(user) &&
+        user.length === q.answer.length &&
+        user.every(a => q.answer.includes(a))
+      ) {
+        correct++;
+      }
+    } else {
+      if (
+        String(user).trim().toLowerCase() ===
+        String(q.answer).trim().toLowerCase()
+      ) {
+        correct++;
+      }
+    }
+  });
+
+  const total = readingData.questions.length;
+  const band = calculateBand(correct);
+
+  return { correct, total, band };
+}
+
+function calculateBand(score) {
+  if (score >= 13) return 9;
+  if (score >= 11) return 8;
+  if (score >= 9) return 7;
+  if (score >= 7) return 6;
+  if (score >= 5) return 5;
+  if (score >= 3) return 4;
+  return 3;
+}
