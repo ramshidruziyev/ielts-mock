@@ -1,16 +1,39 @@
-<script>
-if (!localStorage.getItem("user_email")) {
-  window.location.href = "register.html";
-}
-</script>
-ielts-mock/
-├── index.html
-├── login.html
-├── dashboard.html
-├── css/
-│   └── style.css
-├── js/
-│   ├── auth.js
-│   └── paywall.js
-├── assets/
-└── README.md
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>IELTS Mock Test</title>
+
+  <script>
+    if (!localStorage.getItem("user_email")) {
+      window.location.href = "register.html";
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fb;
+      text-align: center;
+      padding: 40px;
+    }
+    a {
+      display: block;
+      margin: 12px;
+      font-size: 18px;
+      text-decoration: none;
+      color: #2563eb;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>IELTS Mock Test Platform</h1>
+
+  <a href="reading.html">Reading</a>
+  <a href="listening.html">Listening</a>
+  <a href="writing.html">Writing</a>
+  <a href="speaking.html">Speaking</a>
+  <a href="full-mock.html">Full Mock</a>
+</body>
+</html>
