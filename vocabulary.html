@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Vocabulary – IELTS Mock</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: linear-gradient(180deg, #f8fafc, #eef2ff);
+  color: #0f172a;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.tab {
+  padding: 10px 16px;
+  border-radius: 12px;
+  background: #e5e7eb;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.tab.active {
+  background: #2563eb;
+  color: white;
+}
+
+/* Sections */
+.section {
+  display: none;
+  max-width: 800px;
+  margin: auto;
+}
+
+.section.active {
+  display: block;
+}
+
+/* Cards */
+.card {
+  background: white;
+  border-radius: 16px;
+  padding: 18px;
+  margin-bottom: 16px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+.word {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.label {
+  font-weight: 600;
+  color: #2563eb;
+}
+
+.example {
+  font-style: italic;
+  color: #374151;
+}
+
+/* Category buttons */
+.categories {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.cat {
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: #e5e7eb;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.cat.active {
+  background: #22c55e;
+  color: white;
+}
+
+/* Practice */
+.option {
+  padding: 10px;
+  background: #f3f4f6;
+  border-radius: 10px;
+  margin: 8px 0;
+  cursor: pointer;
+}
+
+.option:hover {
+  background: #e5e7eb;
+}
+
+.correct { background: #bbf7d0; }
+.wrong { background: #fecaca; }
+
+button {
+  padding: 12px 20px;
+  border-radius: 12px;
+  border: none;
+  background: #2563eb;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<h1>📘 Vocabulary</h1>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('learn')">Vocabulary Learning</div>
+  <div class="tab" onclick="showTab('practice')">Vocabulary Practice</div>
+</div>
+
+<!-- ================= LEARNING ================= -->
+<div id="learn" class="section active">
+
+  <div class="categories">
+    <div class="cat active" onclick="showCategory('band9')">Band 9 Words</div>
+    <div class="cat" onclick="showCategory('idioms')">Idioms</div>
+    <div class="cat" onclick="showCategory('phrases')">Phrases & Collocations</div>
+    <div class="cat" onclick="showCategory('topics')">Topic Vocabulary</div>
+  </div>
+
+  <div id="words"></div>
+
+</div>
+
+<!-- ================= PRACTICE ================= -->
+<div id="practice" class="section">
+
+  <div class="card">
+    <h2>Vocabulary Practice</h2>
+    <p>Choose the correct synonym.</p>
+    <div id="quiz"></div>
+    <p id="result"></p>
+  </div>
+
+</div>
+
+<script>
+/* ================= DATA ================= */
+const data = {
+  band9: [
+    {
+      word: "Meticulous",
+      meaning: "Very careful and precise",
+      synonym: "Thorough",
+      antonym: "Careless",
+      example: "She is meticulous about grammar in her essays."
+    },
+    {
+      word: "Coherent",
+      meaning: "Logical and well-organized",
+      synonym: "Logical",
+      antonym: "Confusing",
+      example: "Her writing was coherent and easy to follow."
+    }
+  ],
+
+  idioms: [
+    {
+      word: "At the end of the day",
+      meaning: "In the end",
+      synonym: "Ultimately",
+      antonym: "Initially",
+      example: "At the end of the day, practice matters most."
+    }
+  ],
+
+  phrases: [
+    {
+      word: "Play a vital role",
+      meaning: "Be very important",
+      synonym: "Be essential",
+      antonym: "Be irrelevant",
+      example: "Education plays a vital role in society."
+    }
+  ],
+
+  topics: [
+    {
+      word: "Sustainable",
+      meaning: "Able to continue long-term",
+      synonym: "Renewable",
+      antonym: "Unsustainable",
+      example: "Sustainable energy is crucial for the future."
+    }
+  ]
+};
+
+/* ================= LEARNING LOGIC ================= */
+let currentCategory = "band9";
+
+function showCategory(cat) {
+  currentCategory = cat;
+  document.querySelectorAll(".cat").forEach(c => c.classList.remove("active"));
+  event.target.classList.add("active");
+  renderWords();
+}
+
+function renderWords() {
+  const box = document.getElementById("words");
+  box.innerHTML = "";
+  data[currentCategory].forEach(w => {
+    box.innerHTML += `
+      <div class="card">
+        <div class="word">${w.word}</div>
+        <p><span class="label">Meaning:</span> ${w.meaning}</p>
+        <p><span class="label">Synonym:</span> ${w.synonym}</p>
+        <p><span class="label">Antonym:</span> ${w.antonym}</p>
+        <p class="example">"${w.example}"</p>
+      </div>
+    `;
+  });
+}
+
+/* ================= PRACTICE LOGIC ================= */
+let qIndex = 0;
+let score = 0;
+let questions = [];
+
+function startPractice() {
+  questions = Object.values(data).flat().slice(0, 10);
+  qIndex = 0;
+  score = 0;
+  loadQuestion();
+}
+
+function loadQuestion() {
+  if (qIndex >= questions.length) {
+    document.getElementById("quiz").innerHTML = "";
+    document.getElementById("result").innerText =
+      `Correct answers: ${score} / ${questions.length}`;
+    return;
+  }
+
+  const q = questions[qIndex];
+  const options = shuffle([
+    q.synonym,
+    q.antonym,
+    "Incorrect",
+    "Wrong"
+  ]);
+
+  document.getElementById("quiz").innerHTML = `
+    <h3>Synonym of "${q.word}"?</h3>
+    ${options.map(o =>
+      `<div class="option" onclick="check('${o}','${q.synonym}',this)">${o}</div>`
+    ).join("")}
+  `;
+}
+
+function check(sel, correct, el) {
+  if (sel === correct) {
+    el.classList.add("correct");
+    score++;
+  } else {
+    el.classList.add("wrong");
+  }
+  setTimeout(() => {
+    qIndex++;
+    loadQuestion();
+  }, 600);
+}
+
+function shuffle(arr) {
+  return arr.sort(() => Math.random() - 0.5);
+}
+
+/* ================= TAB LOGIC ================= */
+function showTab(tab) {
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+
+  if (tab === "learn") {
+    document.querySelectorAll(".tab")[0].classList.add("active");
+    document.getElementById("learn").classList.add("active");
+  } else {
+    document.querySelectorAll(".tab")[1].classList.add("active");
+    document.getElementById("practice").classList.add("active");
+    startPractice();
+  }
+}
+
+/* Init */
+renderWords();
+</script>
+
+</body>
+</html>
