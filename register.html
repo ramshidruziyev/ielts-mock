@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="uz">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>Register – IELTS Mock</title>
@@ -22,93 +22,74 @@
       height: 100vh;
     }
     .box {
-      background: white;
-      padding: 30px;
+      background: #fff;
+      padding: 25px;
       border-radius: 10px;
-      width: 320px;
+      width: 100%;
+      max-width: 360px;
       text-align: center;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
-    input, button {
+    input {
       width: 100%;
       padding: 10px;
-      margin-top: 10px;
+      margin: 10px 0;
+      font-size: 16px;
     }
     button {
+      width: 100%;
+      padding: 10px;
       background: #2563eb;
-      color: white;
+      color: #fff;
       border: none;
+      font-size: 16px;
       cursor: pointer;
-    }
-    #otpBox {
-      display: none;
+      border-radius: 6px;
     }
   </style>
 </head>
 
 <body>
+  <div class="box">
+    <h2>IELTS Mock</h2>
+    <p>Email orqali tasdiqlang</p>
 
-<div class="box">
-  <h2>IELTS Mock</h2>
-  <p>Email orqali tasdiqlang</p>
-
-  <input type="email" id="email" placeholder="Email manzil" />
-  <button onclick="sendOTP()">Kodni yuborish</button>
-
-  <div id="otpBox">
-    <input type="text" id="otp" placeholder="6 xonali kod" />
-    <button onclick="verifyOTP()">Tasdiqlash</button>
+    <input type="email" id="email" placeholder="Email kiriting" required />
+    <button onclick="sendCode()">Kodni yuborish</button>
   </div>
-</div>
 
-<script>
-function sendOTP() {
-  const email = document.getElementById("email").value;
-  if (!email) {
-    alert("Email kiriting");
-    return;
-  }
+  <script>
+    function sendCode() {
+      const email = document.getElementById("email").value.trim();
 
-  const otp = Math.floor(100000 + Math.random() * 900000);
+      if (!email) {
+        alert("Email kiriting");
+        return;
+      }
 
-  localStorage.setItem("otp", otp);
-  localStorage.setItem("otp_email", email);
-  localStorage.setItem("otp_time", Date.now());
+      const otp = Math.floor(100000 + Math.random() * 900000);
 
-  emailjs.send(
-    "service_jucfowm",      // SERVICE ID
-    "template_8r58roz",     // TEMPLATE ID
-    {
-      email: email,
-      passcode: otp,
-      time: "15 minutes"
+      // OTP ni vaqtincha saqlash
+      localStorage.setItem("otp", otp);
+      localStorage.setItem("user_email", email);
+
+      emailjs.send(
+        "service_jucfowm",     // SERVICE ID
+        "template_8r58roz",    // TEMPLATE ID
+        {
+          user_email: email,  // ⚠️ ENG MUHIM QATOR
+          passcode: otp
+        }
+      ).then(
+        function () {
+          alert("Kod emailga yuborildi");
+          window.location.href = "verify.html";
+        },
+        function (error) {
+          alert("Xato: " + error.text);
+        }
+      );
     }
-  ).then(
-    function () {
-      alert("Tasdiqlash kodi emailingizga yuborildi");
-      document.getElementById("otpBox").style.display = "block";
-    },
-    function (error) {
-      alert("Email yuborilmadi: " + error.text);
-    }
-  );
-}
-
-function verifyOTP() {
-  const userOtp = document.getElementById("otp").value;
-  const savedOtp = localStorage.getItem("otp");
-  const savedEmail = localStorage.getItem("otp_email");
-
-  if (userOtp === savedOtp) {
-    localStorage.setItem("user_email", savedEmail);
-    localStorage.setItem("register_time", Date.now());
-    alert("Muvaffaqiyatli tasdiqlandi!");
-    window.location.href = "index.html";
-  } else {
-    alert("Kod noto‘g‘ri");
-  }
-}
-</script>
-
+  </script>
 </body>
 </html>
