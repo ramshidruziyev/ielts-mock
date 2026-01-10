@@ -2,197 +2,182 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>IELTS Reading Practice</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IELTS Reading</title>
 
 <style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f4f6f9;
+body{margin:0;font-family:Arial;background:#f2f5f9}
+header{
+  background:#1f4fd8;
+  color:#fff;
+  padding:15px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center
+}
+.container{padding:15px}
+.card{
+  background:#fff;
+  border-radius:12px;
+  padding:15px;
+  margin-bottom:15px
+}
+.badge{
+  padding:5px 12px;
+  border-radius:20px;
+  font-size:12px;
+  display:inline-block;
+  margin-bottom:8px
+}
+.free{background:#2ecc71;color:#fff}
+.premium{background:#9b59b6;color:#fff}
+button{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:8px;
+  background:#1f4fd8;
+  color:#fff;
+  font-size:16px
 }
 
-header {
-  background: #1e40af;
-  color: white;
-  padding: 15px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.test{
+  display:flex;
+  height:calc(100vh - 60px)
 }
-
-#timer {
-  font-size: 18px;
-  font-weight: bold;
+.passage{
+  width:55%;
+  background:#fff;
+  padding:20px;
+  overflow:auto
 }
-
-.container {
-  display: flex;
-  height: calc(100vh - 70px);
+.questions{
+  width:45%;
+  padding:20px;
+  overflow:auto;
+  border-left:2px solid #ddd
 }
-
-.passage {
-  width: 50%;
-  padding: 20px;
-  overflow-y: auto;
-  background: white;
-  border-right: 1px solid #ddd;
-}
-
-.questions {
-  width: 50%;
-  padding: 20px;
-  overflow-y: auto;
-}
-
-.question {
-  margin-bottom: 15px;
-  padding: 10px;
-  background: white;
-  border-radius: 6px;
-}
-
-button {
-  background: #1e40af;
-  color: white;
-  border: none;
-  padding: 12px 20px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-button:disabled {
-  background: gray;
-}
-
-.result {
-  margin-top: 20px;
-  padding: 15px;
-  background: #e0f2fe;
-  border-radius: 6px;
-  display: none;
-}
-
-.highlight {
-  background: yellow;
-}
+.hidden{display:none}
 </style>
 </head>
 
 <body>
 
 <header>
-  <div>📘 IELTS Reading Practice</div>
-  <div id="timer">20:00</div>
+  <div id="title">📘 IELTS Reading Tests</div>
+  <div id="timer"></div>
 </header>
 
-<div class="container">
-  <div class="passage" id="passage"></div>
-  <div class="questions" id="questions"></div>
-</div>
+<!-- PASSAGE LIST -->
+<div id="list" class="container"></div>
 
-<div style="padding:20px">
-  <button id="submitBtn" onclick="submitAnswers()">Submit Answers</button>
-  <div class="result" id="result"></div>
+<!-- TEST VIEW -->
+<div id="test" class="test hidden">
+  <div class="passage" id="passageText"></div>
+  <div class="questions">
+    <form id="quiz"></form>
+    <br>
+    <button onclick="submitTest()">Submit Answers</button>
+    <p id="result"></p>
+  </div>
 </div>
-
-<!-- PASSAGE FILE -->
-<script src="reading-data/p001.js"></script>
 
 <script>
-// ================= TIMER =================
-let time = 20 * 60;
-const timerEl = document.getElementById("timer");
+// ================= PASSAGE DATA =================
+const passages = [
+{
+  id:1,
+  title:"Mental Gymnastics",
+  type:"free",
+  time:20,
+  text:`
+  <p><b>A.</b> The working day has just started at the head office of Barclays Bank...</p>
+  <p><b>B.</b> Today's workout, organized by a company called the Mind Gym...</p>
+  <p><b>C.</b> It's easy to poke fun...</p>
+  `,
+  questions:[
+    {
+      q:"Mind Gym coach instructed employees to imagine that they are the building.",
+      options:["TRUE","FALSE","NOT GIVEN"],
+      a:"FALSE"
+    },
+    {
+      q:"According to Mind Gym, scientific research supports their sessions.",
+      options:["TRUE","FALSE","NOT GIVEN"],
+      a:"TRUE"
+    }
+  ]
+}
+];
 
-const countdown = setInterval(() => {
-  let min = Math.floor(time / 60);
-  let sec = time % 60;
-  timerEl.innerText = `${min}:${sec < 10 ? "0" : ""}${sec}`;
-  time--;
+// ================= RENDER LIST =================
+const list=document.getElementById("list");
 
-  if (time < 0) {
-    clearInterval(countdown);
-    submitAnswers();
-  }
-}, 1000);
-
-// ================= LOAD PASSAGE =================
-document.getElementById("passage").innerHTML =
-  `<h2>${passage.title}</h2>` + passage.text;
-
-// ================= LOAD QUESTIONS =================
-const qBox = document.getElementById("questions");
-
-passage.questions.forEach((q, i) => {
-  let html = `<div class="question"><b>${i+1}. ${q.q}</b><br>`;
-
-  if (q.type === "TFNG") {
-    html += `
-      <label><input type="radio" name="q${i}" value="TRUE"> TRUE</label><br>
-      <label><input type="radio" name="q${i}" value="FALSE"> FALSE</label><br>
-      <label><input type="radio" name="q${i}" value="NOT GIVEN"> NOT GIVEN</label>
-    `;
-  }
-
-  if (q.type === "FILL") {
-    html += `<input type="text" name="q${i}" style="width:100%;padding:8px">`;
-  }
-
-  html += `</div>`;
-  qBox.innerHTML += html;
+passages.forEach(p=>{
+  list.innerHTML+=`
+  <div class="card">
+    <span class="badge ${p.type}">${p.type.toUpperCase()}</span>
+    <h3>${p.title}</h3>
+    <button onclick="startTest(${p.id})">Start</button>
+  </div>
+  `;
 });
+
+// ================= START TEST =================
+let current,seconds,interval;
+
+function startTest(id){
+  current=passages.find(p=>p.id===id);
+  list.classList.add("hidden");
+  document.getElementById("test").classList.remove("hidden");
+  document.getElementById("title").innerText=current.title;
+
+  seconds=current.time*60;
+  runTimer();
+
+  document.getElementById("passageText").innerHTML=current.text;
+  const quiz=document.getElementById("quiz");
+  quiz.innerHTML="";
+
+  current.questions.forEach((x,i)=>{
+    quiz.innerHTML+=`
+    <p>${i+1}. ${x.q}</p>
+    ${x.options.map(o=>`
+      <label>
+        <input type="radio" name="q${i}" value="${o}"> ${o}
+      </label><br>
+    `).join("")}
+    <br>
+    `;
+  });
+}
+
+// ================= TIMER =================
+function runTimer(){
+  interval=setInterval(()=>{
+    seconds--;
+    document.getElementById("timer").innerText=
+      Math.floor(seconds/60)+":"+(seconds%60).toString().padStart(2,"0");
+    if(seconds<=0){
+      clearInterval(interval);
+      submitTest();
+    }
+  },1000);
+}
 
 // ================= SUBMIT =================
-function submitAnswers() {
-  document.getElementById("submitBtn").disabled = true;
-  clearInterval(countdown);
+function submitTest(){
+  clearInterval(interval);
+  let score=0;
 
-  let correct = 0;
-
-  passage.questions.forEach((q, i) => {
-    let userAnswer = "";
-    const radios = document.querySelectorAll(`input[name="q${i}"]`);
-    if (radios.length) {
-      radios.forEach(r => { if (r.checked) userAnswer = r.value; });
-    } else {
-      userAnswer = document.querySelector(`input[name="q${i}"]`).value.trim().toLowerCase();
-    }
-
-    if (userAnswer === q.a.toLowerCase()) correct++;
+  current.questions.forEach((q,i)=>{
+    const a=document.querySelector(`input[name=q${i}]:checked`);
+    if(a && a.value===q.a) score++;
   });
 
-  const band = getBand(correct, passage.questions.length);
-  const result = document.getElementById("result");
-  result.style.display = "block";
-  result.innerHTML = `
-    <h3>Result</h3>
-    <p>Correct answers: ${correct} / ${passage.questions.length}</p>
-    <p><b>Band Score: ${band}</b></p>
-  `;
+  document.getElementById("result").innerText=
+    `Correct answers: ${score} / ${current.questions.length}`;
 }
-
-// ================= BAND SCORE =================
-function getBand(score, total) {
-  const percent = score / total;
-  if (percent >= 0.9) return 9;
-  if (percent >= 0.8) return 8;
-  if (percent >= 0.7) return 7;
-  if (percent >= 0.6) return 6;
-  if (percent >= 0.5) return 5;
-  return 4;
-}
-
-// ================= HIGHLIGHT =================
-document.addEventListener("mouseup", () => {
-  const sel = window.getSelection();
-  if (!sel.toString()) return;
-  const range = sel.getRangeAt(0);
-  const span = document.createElement("span");
-  span.className = "highlight";
-  range.surroundContents(span);
-  sel.removeAllRanges();
-});
 </script>
 
 </body>
