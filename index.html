@@ -1,49 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>IELTS Mock Test</title>
+<meta charset="UTF-8">
+<title>IELTS Mock</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f5f7fb;
-      text-align: center;
-      padding: 40px;
-    }
-    a {
-      display: block;
-      margin: 12px;
-      font-size: 18px;
-      text-decoration: none;
-      color: #2563eb;
-    }
-  </style>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f2f4f8;
+  margin: 0;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 14px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.card:hover {
+  transform: scale(1.03);
+}
+
+.card.red {
+  background: #e60023;
+  color: white;
+}
+
+.big {
+  margin-top: 20px;
+  background: #e60023;
+  color: white;
+  padding: 20px;
+  border-radius: 16px;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.logout {
+  margin-top: 25px;
+  text-align: center;
+}
+
+.logout button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background: #333;
+  color: white;
+}
+</style>
 </head>
 
 <body>
 
+<h1>IELTS Mock</h1>
+
+<div class="grid">
+  <div class="card" onclick="go('listening.html')">🎧 Listening</div>
+  <div class="card" onclick="go('reading.html')">📘 Reading</div>
+  <div class="card" onclick="go('writing.html')">✍️ Writing</div>
+  <div class="card" onclick="go('speaking.html')">🎤 Speaking</div>
+
+  <div class="card red" onclick="go('fullmock.html')">📋 Full Mock</div>
+  <div class="card" onclick="go('band.html')">⭐ Band 9.0</div>
+</div>
+
+<div class="big" onclick="go('speaking.html')">
+🎙 Speaking Practice
+</div>
+
+<div class="big" onclick="go('results.html')">
+🏆 Student Success Stories
+</div>
+
+<div class="logout">
+  <button onclick="logout()">Logout</button>
+</div>
+
 <script>
-  const userEmail = localStorage.getItem("user_email");
-  if (!userEmail) {
-    window.location.replace("register.html");
-  }
-</script>
+function go(page) {
+  window.location.href = page;
+}
 
-<h1>IELTS Mock Test</h1>
-
-<a href="reading.html">📘 Reading</a>
-<a href="listening.html">🎧 Listening</a>
-<a href="writing.html">✍️ Writing</a>
-<a href="speaking.html">🎤 Speaking</a>
-
-<button onclick="logout()">Logout</button>
-
-<script>
-  function logout() {
-    localStorage.clear();
-    window.location.replace("register.html");
-  }
+function logout() {
+  localStorage.clear();
+  window.location.href = "register.html";
+}
 </script>
 
 </body>
