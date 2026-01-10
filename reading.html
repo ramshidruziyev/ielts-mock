@@ -1,112 +1,199 @@
-Kim<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Reading – IELTS Mock</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f5f7fb;
-      padding: 20px;
-      text-align: center;
-    }
-    .test {
-      background: white;
-      padding: 20px;
-      margin: 15px auto;
-      max-width: 500px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    button {
-      padding: 10px 20px;
-      margin-top: 10px;
-      background: #2563eb;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    .locked {
-      opacity: 0.6;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>IELTS Reading Practice</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <script>
-    if (!localStorage.getItem("user_email")) {
-      window.location.href = "register.html";
-    }
-  </script>
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f6f9;
+}
+
+header {
+  background: #1e40af;
+  color: white;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#timer {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.container {
+  display: flex;
+  height: calc(100vh - 70px);
+}
+
+.passage {
+  width: 50%;
+  padding: 20px;
+  overflow-y: auto;
+  background: white;
+  border-right: 1px solid #ddd;
+}
+
+.questions {
+  width: 50%;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.question {
+  margin-bottom: 15px;
+  padding: 10px;
+  background: white;
+  border-radius: 6px;
+}
+
+button {
+  background: #1e40af;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button:disabled {
+  background: gray;
+}
+
+.result {
+  margin-top: 20px;
+  padding: 15px;
+  background: #e0f2fe;
+  border-radius: 6px;
+  display: none;
+}
+
+.highlight {
+  background: yellow;
+}
+</style>
 </head>
+
 <body>
 
-<h1>📘 IELTS Reading Practice</h1>
-<p>Free users can access some tests. Premium unlocks all.</p>
+<header>
+  <div>📘 IELTS Reading Practice</div>
+  <div id="timer">20:00</div>
+</header>
 
-<div id="tests"></div>
+<div class="container">
+  <div class="passage" id="passage"></div>
+  <div class="questions" id="questions"></div>
+</div>
+
+<div style="padding:20px">
+  <button id="submitBtn" onclick="submitAnswers()">Submit Answers</button>
+  <div class="result" id="result"></div>
+</div>
+
+<!-- PASSAGE FILE -->
+<script src="reading-data/p001.js"></script>
 
 <script>
-  const isPremium = localStorage.getItem("premium") === "true";
+// ================= TIMER =================
+let time = 20 * 60;
+const timerEl = document.getElementById("timer");
 
-  const readingTests = [
-    { title: "Reading Test 1", free: true },
-    { title: "Reading Test 2", free: true },
-    { title: "Reading Test 3", free: false },
-    { title: "Reading Test 4", free: false },
-    { title: "Reading Test 5", free: false },
-    { title: "Reading Test 6", free: false }
-  ];
+const countdown = setInterval(() => {
+  let min = Math.floor(time / 60);
+  let sec = time % 60;
+  timerEl.innerText = `${min}:${sec < 10 ? "0" : ""}${sec}`;
+  time--;
 
-  const container = document.getElementById("tests");
+  if (time < 0) {
+    clearInterval(countdown);
+    submitAnswers();
+  }
+}, 1000);
 
-  readingTests.forEach(test => {
-    const div = document.createElement("div");
-    div.className = "test";
+// ================= LOAD PASSAGE =================
+document.getElementById("passage").innerHTML =
+  `<h2>${passage.title}</h2>` + passage.text;
 
-    if (!test.free && !isPremium) {
-      div.classList.add("locked");
-      div.innerHTML = `
-        <h3>${test.title}</h3>
-        <p>🔒 Premium only</p>
-        <button onclick="alert('Premium sotib oling')">Unlock Premium</button>
-      `;
+// ================= LOAD QUESTIONS =================
+const qBox = document.getElementById("questions");
+
+passage.questions.forEach((q, i) => {
+  let html = `<div class="question"><b>${i+1}. ${q.q}</b><br>`;
+
+  if (q.type === "TFNG") {
+    html += `
+      <label><input type="radio" name="q${i}" value="TRUE"> TRUE</label><br>
+      <label><input type="radio" name="q${i}" value="FALSE"> FALSE</label><br>
+      <label><input type="radio" name="q${i}" value="NOT GIVEN"> NOT GIVEN</label>
+    `;
+  }
+
+  if (q.type === "FILL") {
+    html += `<input type="text" name="q${i}" style="width:100%;padding:8px">`;
+  }
+
+  html += `</div>`;
+  qBox.innerHTML += html;
+});
+
+// ================= SUBMIT =================
+function submitAnswers() {
+  document.getElementById("submitBtn").disabled = true;
+  clearInterval(countdown);
+
+  let correct = 0;
+
+  passage.questions.forEach((q, i) => {
+    let userAnswer = "";
+    const radios = document.querySelectorAll(`input[name="q${i}"]`);
+    if (radios.length) {
+      radios.forEach(r => { if (r.checked) userAnswer = r.value; });
     } else {
-      div.innerHTML = `
-        <h3>${test.title}</h3>
-        <p>📄 Passage (1 section)</p>
-        <button onclick="showReadingResult(6)">Start Test</button>
+      userAnswer = document.querySelector(`input[name="q${i}"]`).value.trim().toLowerCase();
+    }
 
-    container.appendChild(div);
+    if (userAnswer === q.a.toLowerCase()) correct++;
   });
-// IELTS Academic Reading band calculator (40 questions)
-function getReadingBand(correct) {
-  if (correct >= 39) return 9.0;
-  if (correct >= 37) return 8.5;
-  if (correct >= 35) return 8.0;
-  if (correct >= 32) return 7.5;
-  if (correct >= 30) return 7.0;
-  if (correct >= 26) return 6.5;
-  if (correct >= 23) return 6.0;
-  if (correct >= 18) return 5.5;
-  return 5.0;
+
+  const band = getBand(correct, passage.questions.length);
+  const result = document.getElementById("result");
+  result.style.display = "block";
+  result.innerHTML = `
+    <h3>Result</h3>
+    <p>Correct answers: ${correct} / ${passage.questions.length}</p>
+    <p><b>Band Score: ${band}</b></p>
+  `;
 }
 
-// Natijani ko‘rsatish
-function showReadingResult(correctAnswers, totalQuestions = 10) {
-  // 10 savoldan 40 savolga scale qilamiz
-  const scaledScore = Math.round((correctAnswers / totalQuestions) * 40);
-  const band = getReadingBand(scaledScore);
-
-  alert(
-    "📘 Reading Result\n\n" +
-    "Correct: " + scaledScore + " / 40\n" +
-    "Band Score: " + band
-  );
+// ================= BAND SCORE =================
+function getBand(score, total) {
+  const percent = score / total;
+  if (percent >= 0.9) return 9;
+  if (percent >= 0.8) return 8;
+  if (percent >= 0.7) return 7;
+  if (percent >= 0.6) return 6;
+  if (percent >= 0.5) return 5;
+  return 4;
 }
+
+// ================= HIGHLIGHT =================
+document.addEventListener("mouseup", () => {
+  const sel = window.getSelection();
+  if (!sel.toString()) return;
+  const range = sel.getRangeAt(0);
+  const span = document.createElement("span");
+  span.className = "highlight";
+  range.surroundContents(span);
+  sel.removeAllRanges();
+});
 </script>
-
-<br>
-<a href="index.html">⬅ Back to Home</a>
 
 </body>
 </html>
