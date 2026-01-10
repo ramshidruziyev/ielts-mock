@@ -1,111 +1,106 @@
-const passage = {
+const readingData = {
   id: "p001",
-  title: "Mental Gymnastics",
-  timeLimit: 20,
+  title: "Museum Blockbuster",
+  timeLimitMinutes: 20,
 
-  text: `
-<p><b>A.</b> The working day has just started at the head office of Barclays Bank in London. Seventeen staff are helping themselves to a buffet breakfast as young psychologist Sebastian Bailey enters the room to begin the morning's training session. But this is no ordinary training session. He’s not here to sharpen their finance or management skills. He’s here to exercise their brains.</p>
+  passage: `
+A. Since the 1980s, the term “blockbuster” has become the fashionable word for special spectacular museum, art gallery or science center exhibitions. These exhibitions have the ability to attract large crowds and often large corporate sponsors. Here is one of some existing definitions of blockbuster: Put by Elsen (1984), a blockbuster is a “... large scale loan exhibition that people who normally don’t go to museums will stand in line for hours to see...” James Rosenfield, writing in Direct Marketing in 1993, has described a successful blockbuster exhibition as a “... triumph of both curatorial and marketing skills...” My own definition for blockbuster is “a popular, high profile exhibition on display for a limited period, that attracts the general public, who are prepared to both stand in line and pay a fee in order to partake in the exhibition.” What both Elsen and Rosenfield omit in their descriptions of blockbusters, is that people are prepared to pay a fee to see a blockbuster, and that the term blockbuster can just as easily apply to a movie or a museum exhibition.
 
-<p><b>B.</b> Today’s workout, organized by a company called the Mind Gym in London, entitled “having presence”. What follows is an intense 90-minute session in which this rather abstract concept is gradually broken down into a concrete set of feelings, mental tricks and behaviors.</p>
+B. Merely naming an exhibition or movie a blockbuster however, does not make it a blockbuster. The term can only apply when the item in question has had an overwhelmingly successful response from the public. However, in literature from both the UK and USA the other words that also start to appear in descriptions of blockbusters are “less scholarly”, “non-elitist” and “popularist”. Detractors argue that blockbusters are designed to appeal to the lowest common denominator, while others extol the virtues of encouraging scholars to cooperate on projects, and to provide exhibitions that cater for a broad selection of the community rather than an elite sector.
 
-<p><b>C.</b> It’s easy to poke fun. Yet similar mental workouts are happening in corporate seminar rooms around the globe. The Mind Gym alone offers some 70 different sessions.</p>
+C. Maintaining and increasing visitor levels is paramount in the new museology. This requires continued product development. Not only the creation or hiring of blockbuster exhibitions, but regular exhibition changes and innovations. In addition, the visiting publics have become customers rather than visitors, and the skills that are valued in museums, science centers and galleries to keep the new customers coming through the door have changed. High on the list of requirements are commercial, business, marketing and entrepreneurial skills. Curators are now administrators. Being a director of an art gallery no longer requires an Art Degree. As succinctly summarized in the Economist in 1994 “business nous and public relation skills” were essential requirements for a director, and the ability to compete with other museums to stage travelling exhibitions which draw huge crowds.
 
-<p><b>D.</b> But whatever the style, the companies’ sales pitch is invariably the same – follow our routines to shape and sculpt your brain or mind, just as you might tone and train your body.</p>
+D. The new museology has resulted in the convergence of museums, the heritage industry, and tourism, profit-making and pleasure-giving. This has given rise to much debate about the appropriateness of adapting the activities of institutions so that they more closely reflect the priorities of the market place and whether it is appropriate to see museums primarily as tourist attractions.
 
-<p><b>E.</b> One outfit, Brainergy of Cambridge, Massachusetts, puts it like this: “Studies have shown that mental exercise can cause changes in brain anatomy and brain chemistry.”</p>
+E. But do blockbusters held in public institutions really create a surplus to fund other activities? If the bottom line is profit, then according to the accounting records of many major museums and galleries, blockbusters do make money.
 
-<p><b>F.</b> Indeed, the Mind Gym originally planned to hold its sessions in a local health club, until its founders realized where the real money was to be made.</p>
+F. Blockbusters require large capital expenditure, and draw on resources across all branches of an organization. Everyone from a general laborer to administration staff are required to perform additional tasks.
 
-<p><b>G.</b> Lawrence Katz argues that just as many of us fail to get enough physical exercise, so we also lack sufficient mental stimulation to keep our brain in trim.</p>
+G. Unfortunately, creating or hiring a blockbuster is exhausting for staff. Blockbusters expose staff to the pressures of the market place and may lead to creative excellence.
 
-<p><b>H.</b> Anything, says Katz, to break your normal mental routine. It will help invigorate your brain, encouraging its cells to make new connections.</p>
-
-<p><b>I.</b> Neurotics, in other words, is about letting your brain fulfill its potential. It cannot create super-brains.</p>
-
-<p><b>J.</b> Guy Claxton dismisses most neurological approaches as “neuron-babble”. Nevertheless, he believes mental skills can be learned.</p>
-  `,
+H. Perhaps the best pathway is to balance both blockbusters and regular exhibitions.
+`,
 
   questions: [
     {
       id: 1,
-      type: "ynng",
-      question: "Mind Gym coach instructed employees to imagine that they are the building.",
-      answer: "NO"
-    },
-    {
-      id: 2,
-      type: "ynng",
-      question: "Mind Gym uses similar marketing theory used worldwide.",
-      answer: "YES"
-    },
-    {
-      id: 3,
-      type: "ynng",
-      question: "Susan Greenfield founded Mind Gym.",
-      answer: "NO"
-    },
-    {
-      id: 4,
-      type: "ynng",
-      question: "All industries globally use Mind Gym sessions.",
-      answer: "NO"
-    },
-    {
-      id: 5,
-      type: "ynng",
-      question: "Mind Gym claims strong scientific support for its training.",
-      answer: "NOT GIVEN"
-    },
-
-    {
-      id: 6,
-      type: "match",
-      question: "We do not have enough inspiration to keep our brain fit.",
-      answer: "D"
-    },
-    {
-      id: 7,
-      type: "match",
-      question: "The more you exercise your brain, the more it will grow.",
+      type: "paragraph_matching",
+      text: "A reason for changing the exhibition programs.",
       answer: "C"
     },
     {
-      id: 8,
-      type: "match",
-      question: "Exercise maintains brain health rather than IQ.",
-      answer: "D"
+      id: 2,
+      type: "paragraph_matching",
+      text: "The time people have to wait in a queue in order to enjoy exhibitions.",
+      answer: "A"
     },
+    {
+      id: 3,
+      type: "paragraph_matching",
+      text: "Terms people used when referring to blockbuster.",
+      answer: "B"
+    },
+    {
+      id: 4,
+      type: "paragraph_matching",
+      text: "There was some controversy over confining target groups of blockbuster.",
+      answer: "B"
+    },
+
+    {
+      id: 5,
+      type: "summary",
+      text: "Instead of being visitors, people turned out to be ____.",
+      answer: "customers"
+    },
+    {
+      id: 6,
+      type: "summary",
+      text: "Business nous and ____ were essential requirements.",
+      answer: "public relation skills"
+    },
+    {
+      id: 7,
+      type: "summary",
+      text: "____ has contributed to linking museums and tourism.",
+      answer: "museology"
+    },
+    {
+      id: 8,
+      type: "summary",
+      text: "Museums are seen mainly as ____.",
+      answer: "tourist attractions"
+    },
+
     {
       id: 9,
-      type: "match",
-      question: "Schools should teach creative thinking skills.",
-      answer: "A"
+      type: "multiple_choice",
+      text: "Which TWO advantages are mentioned?",
+      options: {
+        A: "To offer sufficient money to repair architectures.",
+        B: "To maintain and increase visitor levels.",
+        C: "Presenting mixture of culture and commerce.",
+        D: "Being beneficial for local business.",
+        E: "Being beneficial for directors."
+      },
+      answer: ["A", "D"]
     },
-    {
-      id: 10,
-      type: "match",
-      question: "New neural connections can develop after damage.",
-      answer: "D"
-    },
+
     {
       id: 11,
-      type: "match",
-      question: "People label themselves uncreative too early.",
-      answer: "B"
-    },
-    {
-      id: 12,
-      type: "match",
-      question: "Instructor who guided Mind Gym employees.",
-      answer: "B"
-    },
-    {
-      id: 13,
-      type: "match",
-      question: "Most people lack brain skill training.",
-      answer: "A"
+      type: "multiple_choice",
+      text: "Which THREE disadvantages are mentioned?",
+      options: {
+        A: "People hesitate to choose exhibitions.",
+        B: "Workers become tired of workloads.",
+        C: "Content becomes more entertaining than cultural.",
+        D: "General laborers perform additional tasks.",
+        E: "Huge capital invested in specialists.",
+        F: "Staff exposed to market pressure."
+      },
+      answer: ["B", "C", "E"]
     }
   ]
 };
 
-export default passage;
+export default readingData;
