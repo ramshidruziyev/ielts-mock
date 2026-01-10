@@ -1,68 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Register – IELTS Mock</title>
+<meta charset="UTF-8" />
+<title>Register – IELTS Mock</title>
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f5f7fb;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+<script>
+(function(){
+  emailjs.init("w9SojUF4bMIwIk8F8");
+})();
+</script>
 
-    .box {
-      background: white;
-      padding: 30px;
-      border-radius: 8px;
-      width: 300px;
-      text-align: center;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-
-    input, button {
-      width: 100%;
-      padding: 10px;
-      margin-top: 10px;
-    }
-
-    button {
-      background: #2563eb;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-  </style>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background:#f5f7fb;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+.box {
+  background:#fff;
+  padding:25px;
+  width:320px;
+  border-radius:8px;
+  box-shadow:0 0 10px rgba(0,0,0,.1);
+  text-align:center;
+}
+input, button {
+  width:100%;
+  padding:10px;
+  margin-top:10px;
+}
+button {
+  background:#2563eb;
+  color:#fff;
+  border:none;
+  cursor:pointer;
+}
+.hidden { display:none; }
+</style>
 </head>
 
 <body>
+<div class="box">
 
-  <div class="box">
-    <h2>Register</h2>
-    <input type="email" id="email" placeholder="Enter your email" required />
-    <button onclick="registerUser()">Register</button>
-  </div>
+<h2>Register</h2>
 
-  <script>
-    function registerUser() {
-      const email = document.getElementById("email").value;
+<div id="stepEmail">
+  <input type="email" id="email" placeholder="Enter your email" required />
+  <button onclick="sendOTP()">Send OTP</button>
+</div>
 
-      if (!email) {
-        alert("Email kiriting");
-        return;
-      }
+<div id="stepOTP" class="hidden">
+  <input type="text" id="otp" placeholder="Enter 6-digit code" />
+  <button onclick="verifyOTP()">Verify</button>
+</div>
 
-      // USER MAʼLUMOTLARI
-      localStorage.setItem("user_email", email);
-      localStorage.setItem("register_time", Date.now()); // ⭐ MUHIM
-      localStorage.setItem("premium", "false");
+<p id="msg"></p>
 
-      window.location.href = "index.html";
-    }
-  </script>
+</div>
+
+<script>
+let generatedOTP = "";
+let otpExpire = 0;
+
+function sendOTP() {
+  const email = document.getElementById("email").value;
+  if (!email) return alert("Email kiriting");
+
+  generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
+  otpExpire = Date.now() + 5 * 60 * 1000;
+
+  emailjs.send("service_jucfowm", "template_8r58roz", {
+    email: email,
+    otp: generatedOTP
+  }).then(() => {
+    localStorage.setItem("pending_email", email);
+    document.getElementById("stepEmail").classList.add("hidden");
+    document.getElementById("stepOTP").classList.remove("hidden");
+    document.getElementById("msg").innerText = "OTP emailga yuborildi";
+  }, () => {
+    alert("Email yuborilmadi");
+  });
+}
+
+function verifyOTP() {
+  const otp = document.getElementById("otp").value;
+
+  if (Date.now() > otpExpire) {
+    return alert("Kod muddati tugadi");
+  }
+
+  if (otp === generatedOTP) {
+    localStorage.setItem("user_email", localStorage.getItem("pending_email"));
+    localStorage.setItem("register_time", Date.now());
+    localStorage.removeItem("pending_email");
+    window.location.href = "index.html";
+  } else {
+    alert("Noto‘g‘ri kod");
+  }
+}
+</script>
 
 </body>
 </html>
