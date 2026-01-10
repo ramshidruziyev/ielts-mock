@@ -13,6 +13,7 @@
       align-items: center;
       height: 100vh;
     }
+
     .box {
       background: white;
       padding: 30px;
@@ -21,11 +22,13 @@
       text-align: center;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
+
     input, button {
       width: 100%;
       padding: 10px;
       margin-top: 10px;
     }
+
     button {
       background: #2563eb;
       color: white;
@@ -36,23 +39,30 @@
 </head>
 
 <body>
+
   <div class="box">
     <h2>Register</h2>
-    <input type="email" id="email" placeholder="Email" required />
-    <button onclick="register()">Continue</button>
+    <input type="email" id="email" placeholder="Enter your email" required />
+    <button onclick="registerUser()">Register</button>
   </div>
 
   <script>
-    function register() {
+    function registerUser() {
       const email = document.getElementById("email").value;
+
       if (!email) {
         alert("Email kiriting");
         return;
       }
+
+      // USER MAʼLUMOTLARI
       localStorage.setItem("user_email", email);
-      localStorage.setItem("register_time", Date.now());
+      localStorage.setItem("register_time", Date.now()); // ⭐ MUHIM
+      localStorage.setItem("premium", "false");
+
       window.location.href = "index.html";
     }
   </script>
+
 </body>
 </html>
