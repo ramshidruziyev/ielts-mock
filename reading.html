@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Reading – IELTS Mock</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fb;
+      padding: 20px;
+      text-align: center;
+    }
+    .test {
+      background: white;
+      padding: 20px;
+      margin: 15px auto;
+      max-width: 500px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    button {
+      padding: 10px 20px;
+      margin-top: 10px;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .locked {
+      opacity: 0.6;
+    }
+  </style>
+
+  <script>
+    if (!localStorage.getItem("user_email")) {
+      window.location.href = "register.html";
+    }
+  </script>
+</head>
+<body>
+
+<h1>📘 IELTS Reading Practice</h1>
+<p>Free users can access some tests. Premium unlocks all.</p>
+
+<div id="tests"></div>
+
+<script>
+  const isPremium = localStorage.getItem("premium") === "true";
+
+  const readingTests = [
+    { title: "Reading Test 1", free: true },
+    { title: "Reading Test 2", free: true },
+    { title: "Reading Test 3", free: false },
+    { title: "Reading Test 4", free: false },
+    { title: "Reading Test 5", free: false },
+    { title: "Reading Test 6", free: false }
+  ];
+
+  const container = document.getElementById("tests");
+
+  readingTests.forEach(test => {
+    const div = document.createElement("div");
+    div.className = "test";
+
+    if (!test.free && !isPremium) {
+      div.classList.add("locked");
+      div.innerHTML = `
+        <h3>${test.title}</h3>
+        <p>🔒 Premium only</p>
+        <button onclick="alert('Premium sotib oling')">Unlock Premium</button>
+      `;
+    } else {
+      div.innerHTML = `
+        <h3>${test.title}</h3>
+        <p>📄 Passage (1 section)</p>
+        <button onclick="alert('Test ochildi (demo)')">Start Test</button>
+      `;
+    }
+
+    container.appendChild(div);
+  });
+</script>
+
+<br>
+<a href="index.html">⬅ Back to Home</a>
+
+</body>
+</html>
