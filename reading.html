@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+Kim<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -74,12 +74,35 @@
       div.innerHTML = `
         <h3>${test.title}</h3>
         <p>📄 Passage (1 section)</p>
-        <button onclick="alert('Test ochildi (demo)')">Start Test</button>
-      `;
-    }
+        <button onclick="showReadingResult(6)">Start Test</button>
 
     container.appendChild(div);
   });
+// IELTS Academic Reading band calculator (40 questions)
+function getReadingBand(correct) {
+  if (correct >= 39) return 9.0;
+  if (correct >= 37) return 8.5;
+  if (correct >= 35) return 8.0;
+  if (correct >= 32) return 7.5;
+  if (correct >= 30) return 7.0;
+  if (correct >= 26) return 6.5;
+  if (correct >= 23) return 6.0;
+  if (correct >= 18) return 5.5;
+  return 5.0;
+}
+
+// Natijani ko‘rsatish
+function showReadingResult(correctAnswers, totalQuestions = 10) {
+  // 10 savoldan 40 savolga scale qilamiz
+  const scaledScore = Math.round((correctAnswers / totalQuestions) * 40);
+  const band = getReadingBand(scaledScore);
+
+  alert(
+    "📘 Reading Result\n\n" +
+    "Correct: " + scaledScore + " / 40\n" +
+    "Band Score: " + band
+  );
+}
 </script>
 
 <br>
