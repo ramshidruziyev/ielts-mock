@@ -1,8 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uz">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Register – IELTS Mock</title>
+
+  <!-- EmailJS -->
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  <script>
+    (function () {
+      emailjs.init("w9SojUF4bMIwIk8F8"); // PUBLIC KEY
+    })();
+  </script>
 
   <style>
     body {
@@ -13,108 +21,93 @@
       align-items: center;
       height: 100vh;
     }
-
     .box {
       background: white;
       padding: 30px;
-      border-radius: 8px;
+      border-radius: 10px;
       width: 320px;
       text-align: center;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-
     input, button {
       width: 100%;
       padding: 10px;
       margin-top: 10px;
-      font-size: 15px;
     }
-
     button {
       background: #2563eb;
       color: white;
       border: none;
-      border-radius: 5px;
       cursor: pointer;
     }
-
-    button:hover {
-      background: #1e4ed8;
-    }
-
     #otpBox {
       display: none;
     }
-
-    #msg {
-      margin-top: 10px;
-      color: green;
-      font-size: 14px;
-    }
   </style>
 </head>
+
 <body>
 
 <div class="box">
   <h2>IELTS Mock</h2>
   <p>Email orqali tasdiqlang</p>
 
-  <input type="email" id="email" placeholder="Email kiriting">
-
-  <button onclick="sendOTP()">Kod yuborish</button>
+  <input type="email" id="email" placeholder="Email manzil" />
+  <button onclick="sendOTP()">Kodni yuborish</button>
 
   <div id="otpBox">
-    <input type="text" id="otp" placeholder="6 xonali kod">
+    <input type="text" id="otp" placeholder="6 xonali kod" />
     <button onclick="verifyOTP()">Tasdiqlash</button>
   </div>
-
-  <p id="msg"></p>
 </div>
 
-<!-- EmailJS -->
-<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
-
 <script>
-  emailjs.init("w9SojUF4bMIwIk8F8"); // PUBLIC KEY
+function sendOTP() {
+  const email = document.getElementById("email").value;
+  if (!email) {
+    alert("Email kiriting");
+    return;
+  }
 
-  let generatedOTP = "";
+  const otp = Math.floor(100000 + Math.random() * 900000);
 
-  function sendOTP() {
-    const email = document.getElementById("email").value;
-    if (!email) {
-      alert("Email kiriting");
-      return;
-    }
+  localStorage.setItem("otp", otp);
+  localStorage.setItem("otp_email", email);
+  localStorage.setItem("otp_time", Date.now());
 
-    generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
-
-    emailjs.send("service_jucfowm", "template_8r58roz", {
+  emailjs.send(
+    "service_jucfowm",      // SERVICE ID
+    "template_8r58roz",     // TEMPLATE ID
+    {
       email: email,
-      passcode: generatedOTP,
+      passcode: otp,
       time: "15 minutes"
-    }).then(() => {
-      document.getElementById("msg").innerText =
-        "Kod emailingizga yuborildi";
-      document.getElementById("otpBox").style.display = "block";
-    }).catch((error) => {
-      alert("Email yuborilmadi");
-      console.log(error);
-    });
-  }
-
-  function verifyOTP() {
-    const userOTP = document.getElementById("otp").value;
-
-    if (userOTP === generatedOTP) {
-      localStorage.setItem("user_email",
-        document.getElementById("email").value);
-      localStorage.setItem("register_time", Date.now());
-
-      window.location.href = "index.html";
-    } else {
-      alert("Kod noto‘g‘ri");
     }
+  ).then(
+    function () {
+      alert("Tasdiqlash kodi emailingizga yuborildi");
+      document.getElementById("otpBox").style.display = "block";
+    },
+    function (error) {
+      alert("Email yuborilmadi: " + error.text);
+    }
+  );
+}
+
+function verifyOTP() {
+  const userOtp = document.getElementById("otp").value;
+  const savedOtp = localStorage.getItem("otp");
+  const savedEmail = localStorage.getItem("otp_email");
+
+  if (userOtp === savedOtp) {
+    localStorage.setItem("user_email", savedEmail);
+    localStorage.setItem("register_time", Date.now());
+    alert("Muvaffaqiyatli tasdiqlandi!");
+    window.location.href = "index.html";
+  } else {
+    alert("Kod noto‘g‘ri");
   }
+}
 </script>
 
 </body>
