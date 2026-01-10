@@ -1,16 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Register – IELTS Mock</title>
+  <meta charset="UTF-8">
+  <title>IELTS Mock Verification</title>
 
-  <!-- EmailJS -->
   <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
-  <script>
-    (function () {
-      emailjs.init("w9SojUF4bMIwIk8F8"); // PUBLIC KEY
-    })();
-  </script>
 
   <style>
     body {
@@ -28,7 +22,7 @@
       width: 100%;
       max-width: 360px;
       text-align: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
     input {
       width: 100%;
@@ -40,56 +34,81 @@
       width: 100%;
       padding: 10px;
       background: #2563eb;
-      color: #fff;
+      color: white;
       border: none;
+      border-radius: 6px;
       font-size: 16px;
       cursor: pointer;
-      border-radius: 6px;
+    }
+    .hidden {
+      display: none;
     }
   </style>
 </head>
 
 <body>
-  <div class="box">
-    <h2>IELTS Mock</h2>
-    <p>Email orqali tasdiqlang</p>
 
-    <input type="email" id="email" placeholder="Email kiriting" required />
-    <button onclick="sendCode()">Kodni yuborish</button>
+<div class="box">
+  <h2>IELTS Mock</h2>
+  <p>Email orqali tasdiqlang</p>
+
+  <input type="email" id="email" placeholder="Emailingizni kiriting">
+  <button onclick="sendOTP()">Kodni yuborish</button>
+
+  <div id="otpBox" class="hidden">
+    <input type="number" id="otpInput" placeholder="Kodni kiriting">
+    <button onclick="verifyOTP()">Tasdiqlash</button>
   </div>
+</div>
 
-  <script>
-    function sendCode() {
-      const email = document.getElementById("email").value.trim();
+<script>
+  emailjs.init("w9SojUF4bMIwIk8F8"); // PUBLIC KEY
 
-      if (!email) {
-        alert("Email kiriting");
-        return;
-      }
+  let otpCode = "";
 
-      const otp = Math.floor(100000 + Math.random() * 900000);
+  function sendOTP() {
+    const email = document.getElementById("email").value.trim();
 
-      // OTP ni vaqtincha saqlash
-      localStorage.setItem("otp", otp);
-      localStorage.setItem("user_email", email);
-
-      emailjs.send(
-        "service_jucfowm",     // SERVICE ID
-        "template_8r58roz",    // TEMPLATE ID
-        {
-          user_email: email,  // ⚠️ ENG MUHIM QATOR
-          passcode: otp
-        }
-      ).then(
-        function () {
-          alert("Kod emailga yuborildi");
-          window.location.href = "verify.html";
-        },
-        function (error) {
-          alert("Xato: " + error.text);
-        }
-      );
+    if (!email) {
+      alert("Email kiriting");
+      return;
     }
-  </script>
+
+    otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+
+    localStorage.setItem("otp", otpCode);
+    localStorage.setItem("user_email", email);
+
+    emailjs.send(
+      "service_jucfowm",
+      "template_8r58roz",
+      {
+        user_email: email,   // 🔴 MUHIM: TEMPLATE BILAN MOS
+        passcode: otpCode
+      }
+    ).then(
+      function () {
+        alert("Kod emailga yuborildi");
+        document.getElementById("otpBox").classList.remove("hidden");
+      },
+      function (error) {
+        alert("Email yuborilmadi: " + error.text);
+      }
+    );
+  }
+
+  function verifyOTP() {
+    const entered = document.getElementById("otpInput").value;
+    const saved = localStorage.getItem("otp");
+
+    if (entered === saved) {
+      localStorage.setItem("verified", "true");
+      window.location.href = "index.html";
+    } else {
+      alert("Kod noto‘g‘ri");
+    }
+  }
+</script>
+
 </body>
 </html>
