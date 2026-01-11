@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>IELTS Reading</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" href="reading.css" />
+</head>
+<body>
+
+<header>
+  <div>📘 IELTS Reading</div>
+  <div id="timer">20:00</div>
+</header>
+
+<main class="container">
+
+  <!-- TEST TITLE -->
+  <h2 id="testTitle"></h2>
+
+  <!-- LAYOUT -->
+  <div class="layout">
+
+    <!-- PASSAGE -->
+    <section id="passage" class="box"></section>
+
+    <!-- QUESTIONS -->
+    <section id="questions" class="box"></section>
+
+  </div>
+
+  <button id="submitBtn">Submit Answers</button>
+
+  <div id="result"></div>
+
+</main>
+
+<!-- DATA -->
+<script src="data/index.js"></script>
+
+<!-- ENGINE -->
+<script src="reading.js"></script>
+
+</body>
+</html>
