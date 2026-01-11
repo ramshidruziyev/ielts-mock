@@ -12,22 +12,34 @@
   <span id="timer">20:00</span>
 </header>
 
-<div class="layout">
-  <div id="passage" class="passage"></div>
-  <div id="questions" class="questions"></div>
+<div class="container">
+  <div id="passage"></div>
+  <div id="questions"></div>
 </div>
 
 <button id="submitBtn">Submit Answers</button>
 
 <script>
-  const id = new URLSearchParams(location.search).get("id");
-  if (!id) alert("Test ID topilmadi");
+  const params = new URLSearchParams(window.location.search);
+  const testId = params.get("id");
 
-  const s = document.createElement("script");
-  s.src = `data/${id}.js`;
-  document.body.appendChild(s);
+  if (!testId) {
+    alert("Test ID topilmadi");
+  } else {
+    // 1️⃣ Test data yuklanadi
+    const dataScript = document.createElement("script");
+    dataScript.src = `data/${testId}.js`;
+
+    // 2️⃣ reading.js keyin yuklanadi
+    dataScript.onload = () => {
+      const engine = document.createElement("script");
+      engine.src = "reading.js";
+      document.body.appendChild(engine);
+    };
+
+    document.body.appendChild(dataScript);
+  }
 </script>
 
-<script src="reading.js"></script>
 </body>
 </html>
