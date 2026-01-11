@@ -1,146 +1,176 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>IELTS Reading Test</title>
+<meta charset="UTF-8">
+<title>IELTS Reading</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- CSS -->
-  <link rel="stylesheet" href="reading.css"/>
-
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f5f7fb;
-    }
-
-    header {
-      background: #1f4fd8;
-      color: #fff;
-      padding: 14px 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 18px;
-    }
-
-    #timer {
-      background: #fff;
-      color: #1f4fd8;
-      padding: 6px 12px;
-      border-radius: 6px;
-      font-weight: bold;
-    }
-
-    .container {
-      padding: 16px;
-    }
-
-    #testTitle {
-      margin-bottom: 12px;
-    }
-
-    .layout {
-      display: flex;
-      gap: 16px;
-    }
-
-    #passage {
-      flex: 1;
-      background: #fff;
-      padding: 14px;
-      border-radius: 8px;
-      height: 65vh;
-      overflow-y: auto;
-      line-height: 1.6;
-    }
-
-    #questions {
-      flex: 1;
-      background: #fff;
-      padding: 14px;
-      border-radius: 8px;
-      height: 65vh;
-      overflow-y: auto;
-    }
-
-    .question {
-      margin-bottom: 16px;
-    }
-
-    .question h4 {
-      margin: 0 0 6px;
-    }
-
-    button {
-      width: 100%;
-      padding: 14px;
-      margin-top: 16px;
-      background: #1f4fd8;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background: #163bb5;
-    }
-
-    #result {
-      margin-top: 16px;
-      background: #fff;
-      padding: 14px;
-      border-radius: 8px;
-      display: none;
-    }
-
-    .highlight {
-      background: yellow;
-    }
-  </style>
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f6fb;
+}
+header {
+  background: #1e4fd7;
+  color: #fff;
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.container {
+  padding: 12px;
+}
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+#passage, #questions {
+  background: #fff;
+  padding: 12px;
+  border-radius: 8px;
+  height: 70vh;
+  overflow-y: auto;
+}
+.question {
+  margin-bottom: 14px;
+}
+input[type=text] {
+  width: 100%;
+  padding: 6px;
+}
+button {
+  width: 100%;
+  background: #1e4fd7;
+  color: #fff;
+  border: none;
+  padding: 14px;
+  font-size: 16px;
+  border-radius: 6px;
+  margin-top: 10px;
+}
+#result {
+  margin-top: 10px;
+  font-weight: bold;
+}
+mark {
+  background: yellow;
+}
+</style>
 </head>
 
 <body>
 
-  <!-- HEADER -->
-  <header>
-    <div>📘 IELTS Reading</div>
-    <div id="timer">20:00</div>
-  </header>
+<header>
+  <div>📘 IELTS Reading</div>
+  <div id="timer">20:00</div>
+</header>
 
-  <!-- CONTENT -->
-  <div class="container">
-    <h2 id="testTitle">Loading...</h2>
+<div class="container">
+  <h2 id="title">Loading...</h2>
 
-    <div class="layout">
-
-      <!-- PASSAGE -->
-      <div id="passage">
-        Loading passage...
-      </div>
-
-      <!-- QUESTIONS -->
-      <div id="questions">
-        Loading questions...
-      </div>
-
-    </div>
-
-    <!-- SUBMIT -->
-    <button id="submitBtn">Submit Answers</button>
-
-    <!-- RESULT -->
-    <div id="result"></div>
+  <div class="layout">
+    <div id="passage">Loading passage...</div>
+    <div id="questions">Loading questions...</div>
   </div>
 
-  <!-- 📌 TEST DATA INDEX -->
-  <script src="reading-data/index.js"></script>
+  <button id="submitBtn">Submit Answers</button>
+  <div id="result"></div>
+</div>
 
-  <!-- 📌 MAIN LOGIC -->
-  <script src="reading.js"></script>
+<script>
+/* ================= TIMER ================= */
+let time = 20 * 60;
+const timerEl = document.getElementById("timer");
+const timerInterval = setInterval(() => {
+  const m = String(Math.floor(time / 60)).padStart(2, "0");
+  const s = String(time % 60).padStart(2, "0");
+  timerEl.textContent = m + ":" + s;
+  if (--time < 0) {
+    clearInterval(timerInterval);
+    checkAnswers();
+  }
+}, 1000);
+
+/* ============== LOAD TEST ================= */
+const params = new URLSearchParams(location.search);
+const testId = params.get("id") || "p001";
+
+const script = document.createElement("script");
+script.src = `reading-data/${testId}.js`;
+script.onload = initTest;
+document.body.appendChild(script);
+
+/* ============== INIT ================= */
+function initTest() {
+  document.getElementById("title").textContent = readingData.title;
+  document.getElementById("passage").innerHTML = readingData.passage;
+
+  let qHTML = "";
+  readingData.questions.forEach(q => {
+    qHTML += `<div class="question"><b>${q.id}. ${q.text}</b><br>`;
+    if (q.type === "multiple_choice") {
+      for (let k in q.options) {
+        qHTML += `
+          <label>
+            <input type="checkbox" name="q${q.id}" value="${k}"> ${k}. ${q.options[k]}
+          </label><br>`;
+      }
+    } else {
+      qHTML += `<input type="text" id="q${q.id}">`;
+    }
+    qHTML += "</div>";
+  });
+  document.getElementById("questions").innerHTML = qHTML;
+}
+
+/* ============== SUBMIT ================= */
+document.getElementById("submitBtn").onclick = checkAnswers;
+
+function checkAnswers() {
+  let correct = 0;
+
+  readingData.questions.forEach(q => {
+    if (q.type === "multiple_choice") {
+      const checked = [...document.querySelectorAll(`input[name=q${q.id}]:checked`)]
+        .map(i => i.value).sort().join("");
+      const ans = q.answer.sort().join("");
+      if (checked === ans) correct++;
+    } else {
+      const val = document.getElementById(`q${q.id}`).value.trim().toLowerCase();
+      if (val === q.answer.toLowerCase()) correct++;
+    }
+  });
+
+  const band = calcBand(correct, readingData.questions.length);
+  document.getElementById("result").innerHTML =
+    `Correct: ${correct} / ${readingData.questions.length}<br>Band Score: ${band}`;
+}
+
+/* ============== BAND ================= */
+function calcBand(score, total) {
+  const percent = score / total;
+  if (percent >= 0.9) return 9;
+  if (percent >= 0.8) return 8;
+  if (percent >= 0.7) return 7;
+  if (percent >= 0.6) return 6;
+  if (percent >= 0.5) return 5;
+  return 4;
+}
+
+/* ============== HIGHLIGHT ================= */
+document.getElementById("passage").addEventListener("mouseup", () => {
+  const sel = window.getSelection();
+  if (sel.toString().length > 0) {
+    const range = sel.getRangeAt(0);
+    const mark = document.createElement("mark");
+    range.surroundContents(mark);
+    sel.removeAllRanges();
+  }
+});
+</script>
 
 </body>
 </html>
