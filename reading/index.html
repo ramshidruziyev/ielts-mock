@@ -1,31 +1,28 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>IELTS Reading</title>
   <link rel="stylesheet" href="reading.css">
 </head>
 <body>
 
-<h2>📘 IELTS Reading Tests</h2>
-<div id="list"></div>
+<h1>📘 IELTS Reading Tests</h1>
+
+<div id="testList"></div>
 
 <script src="data/index.js"></script>
 <script>
-const list = document.getElementById("list");
+  const box = document.getElementById("testList");
 
-READING_INDEX.forEach(t => {
-  const div = document.createElement("div");
-  div.className = "card";
-  div.innerHTML = `
-    <h3>Passage ${t.passage}: ${t.title}</h3>
-    <button onclick="start('${t.id}')">Start</button>
-  `;
-  list.appendChild(div);
-});
-
-function start(id){
-  location.href = "reading.html?id=" + id;
-}
+  READING_TESTS.forEach((t, i) => {
+    box.innerHTML += `
+      <div class="test-card">
+        <h3>Passage ${i + 1}: ${t.title}</h3>
+        <a class="start-btn" href="reading.html?id=${t.id}">START</a>
+      </div>
+    `;
+  });
 </script>
 
 </body>
