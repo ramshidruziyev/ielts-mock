@@ -1,79 +1,92 @@
-// ===== LOAD DATA =====
-document.getElementById("title").innerText = readingData.title;
+const params = new URLSearchParams(location.search);
+const id = params.get("id");
 
-// Paragraph split
-const passageDiv = document.getElementById("passage");
-readingData.passage.trim().split("\n\n").forEach(p => {
-  const el = document.createElement("p");
-  el.textContent = p;
-  passageDiv.appendChild(el);
-});
+const script = document.createElement("script");
+script.src = "data/" + id + ".js";
+script.onload = init;
+document.body.appendChild(script);
 
-// ===== QUESTIONS =====
-const form = document.getElementById("questionsForm");
+let time, interval;
 
-readingData.questions.forEach(q => {
-  const div = document.createElement("div");
-  div.className = "question";
+function init() {
+  document.getElementById("title").innerText = READING_DATA.title;
+  renderPassage();
+  renderQuestions();
+  startTimer(READING_DATA.timeLimit);
+}
 
-  const title = document.createElement("p");
-  title.innerHTML = `<b>${q.id}.</b> ${q.text}`;
-  div.appendChild(title);
+function renderPassage() {
+  const p = document.getElementById("passage");
+  Object.entries(READING_DATA.passage).forEach(([k,v])=>{
+    const d=document.createElement("div");
+    d.className="para";
+    d.innerHTML=`<b>${k}.</b> ${v}`;
+    d.onclick=()=>d.classList.toggle("highlight");
+    p.appendChild(d);
+  });
+}
 
-  if (q.type === "paragraph") {
-    ["A","B","C","D","E","F","G","H"].forEach(l => {
-      div.innerHTML += `
-        <label>
-          <input type="radio" name="q${q.id}" value="${l}"> ${l}
-        </label>`;
-    });
-  }
-
-  if (q.type === "input") {
-    div.innerHTML += `<input type="text" name="q${q.id}" />`;
-  }
-
-  if (q.type === "multi") {
-    for (let k in q.options) {
-      div.innerHTML += `
-        <label>
-          <input type="checkbox" name="q${q.id}" value="${k}"> ${k}. ${q.options[k]}
-        </label>`;
+function renderQuestions() {
+  const q=document.getElementById("questions");
+  READING_DATA.questions.forEach(x=>{
+    let html=`<div class="q"><p>${x.id}. ${x.text}</p>`;
+    if(x.type==="paragraph"){
+      "ABCDEFGH".split("").forEach(l=>{
+        html+=`<label><input type="radio" name="q${x.id}" value="${l}">${l}</label>`;
+      });
     }
-  }
-
-  form.appendChild(div);
-});
-
-// ===== SUBMIT & CHECK =====
-document.getElementById("submitBtn").onclick = () => {
-  let score = 0;
-
-  readingData.questions.forEach(q => {
-    if (q.type === "paragraph") {
-      const v = form[`q${q.id}`]?.value;
-      if (v === q.answer) score++;
+    if(x.type==="input"){
+      html+=`<input id="q${x.id}">`;
     }
-
-    if (q.type === "input") {
-      const v = form[`q${q.id}`]?.value.trim().toLowerCase();
-      if (v === q.answer.toLowerCase()) score++;
+    if(x.type==="multi"){
+      x.options.forEach((o,i)=>{
+        html+=`<label><input type="checkbox" data-limit="${x.limit}" name="q${x.id}" value="${i}">${o}</label>`;
+      });
     }
+    html+="</div>";
+    q.innerHTML+=html;
+  });
 
-    if (q.type === "multi") {
-      const checked = [...form.querySelectorAll(`input[name="q${q.id}"]:checked`)]
-        .map(i => i.value);
-      if (JSON.stringify(checked.sort()) === JSON.stringify(q.answer.sort())) score++;
+  document.querySelectorAll("input[type=checkbox]").forEach(c=>{
+    c.onchange=()=>{
+      const g=document.getElementsByName(c.name);
+      const limit=c.dataset.limit;
+      if([...g].filter(x=>x.checked).length>limit) c.checked=false;
+    };
+  });
+}
+
+function startTimer(m){
+  let s=m*60;
+  interval=setInterval(()=>{
+    const min=String(Math.floor(s/60)).padStart(2,"0");
+    const sec=String(s%60).padStart(2,"0");
+    timer.innerText=min+":"+sec;
+    if(--s<0) submitTest();
+  },1000);
+}
+
+function submitTest(){
+  clearInterval(interval);
+  let score=0;
+  READING_DATA.questions.forEach(q=>{
+    if(q.type==="paragraph"){
+      const a=document.querySelector(`input[name=q${q.id}]:checked`);
+      if(a && a.value===q.answer) score++;
+    }
+    if(q.type==="input"){
+      const v=document.getElementById("q"+q.id).value.trim().toLowerCase();
+      if(v===q.answer) score++;
+    }
+    if(q.type==="multi"){
+      const c=[...document.querySelectorAll(`input[name=q${q.id}]:checked`)].map(x=>+x.value);
+      if(JSON.stringify(c.sort())===JSON.stringify(q.answer.sort())) score++;
     }
   });
 
-  // IELTS BAND
-  const bands = [
-    [39,9],[37,8.5],[35,8],[33,7.5],[30,7],[27,6.5],
-    [23,6],[19,5.5],[15,5],[10,4],[0,3]
-  ];
+  const res=JSON.parse(localStorage.getItem("readingResults")||"[]");
+  res.push({title:READING_DATA.title,score,total:READING_DATA.questions.length});
+  localStorage.setItem("readingResults",JSON.stringify(res));
 
-  const band = bands.find(b => score >= b[0])[1];
-
-  alert(`Score: ${score}/${readingData.questions.length}\nBand: ${band}`);
-};
+  alert("Score: "+score+"/"+READING_DATA.questions.length);
+}
