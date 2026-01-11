@@ -1,163 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>IELTS Mock</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
-  <style>
-    * {
-      box-sizing: border-box;
-      font-family: Arial, Helvetica, sans-serif;
-    }
-
-    body {
-      margin: 0;
-      padding: 0;
-      background: #f4f6fb;
-      color: #222;
-    }
-
-    h1 {
-      text-align: center;
-      margin: 24px 0;
-    }
-
-    .container {
-      max-width: 900px;
-      margin: auto;
-      padding: 16px;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
-    }
-
-    .card {
-      background: #fff;
-      border-radius: 14px;
-      padding: 24px;
-      text-align: center;
-      text-decoration: none;
-      color: #222;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-      transition: transform 0.2s;
-    }
-
-    .card:hover {
-      transform: translateY(-4px);
-    }
-
-    .card span {
-      display: block;
-      font-size: 18px;
-      font-weight: bold;
-      margin-top: 10px;
-    }
-
-    .full {
-      grid-column: span 2;
-      background: #2563eb;
-      color: #fff;
-    }
-
-    .results {
-      grid-column: span 2;
-      background: #16a34a;
-      color: #fff;
-    }
-
-    .speaking {
-      grid-column: span 2;
-      background: #dc2626;
-      color: #fff;
-    }
-
-    .logout {
-      margin-top: 24px;
-      text-align: center;
-    }
-
-    .logout a {
-      display: inline-block;
-      background: #111827;
-      color: #fff;
-      padding: 12px 28px;
-      border-radius: 24px;
-      text-decoration: none;
-    }
-
-    @media (max-width: 600px) {
-      .grid {
-        grid-template-columns: 1fr;
-      }
-
-      .full,
-      .results,
-      .speaking {
-        grid-column: span 1;
-      }
-    }
-  </style>
+  <meta charset="UTF-8">
+  <title>IELTS Reading Tests</title>
+  <link rel="stylesheet" href="reading.css">
 </head>
-
 <body>
 
-  <h1>IELTS Mock</h1>
+<h2>📘 IELTS Reading Tests</h2>
 
-  <div class="container">
-    <div class="grid">
+<div id="tests"></div>
 
-      <!-- LISTENING -->
-      <a class="card" href="listening.html">
-        🎧
-        <span>Listening</span>
-      </a>
+<script src="data/index.js"></script>
 
-      <!-- READING (ENG MUHIMI) -->
-      <a class="card" href="reading/reading.html">
-        📘
-        <span>Reading</span>
-      </a>
+<script>
+  const container = document.getElementById("tests");
 
-      <!-- WRITING -->
-      <a class="card" href="#">
-        ✍️
-        <span>Writing</span>
-      </a>
+  window.READING_INDEX.forEach(test => {
+    const card = document.createElement("div");
+    card.style.marginBottom = "20px";
 
-      <!-- VOCABULARY -->
-      <a class="card" href="vocabulary.html">
-        🧠
-        <span>Vocabulary</span>
-      </a>
+    card.innerHTML = `
+      <h3>Passage ${test.id.replace("p","")}: ${test.title}</h3>
+      <button onclick="startTest('${test.id}')">Start</button>
+      <hr>
+    `;
 
-      <!-- FULL MOCK -->
-      <a class="card full" href="#">
-        📋
-        <span>Full Mock</span>
-      </a>
+    container.appendChild(card);
+  });
 
-      <!-- RESULTS -->
-      <a class="card results" href="#">
-        📊
-        <span>My Mock Results</span>
-      </a>
-
-      <!-- SPEAKING -->
-      <a class="card speaking" href="speaking.html">
-        🎤
-        <span>Speaking Practice</span>
-      </a>
-
-    </div>
-
-    <div class="logout">
-      <a href="register.html">Logout</a>
-    </div>
-  </div>
+  function startTest(id) {
+    window.location.href = `reading.html?id=${id}`;
+  }
+</script>
 
 </body>
 </html>
