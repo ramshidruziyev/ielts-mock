@@ -1,9 +1,11 @@
-export const readingData = {
+const readingData = {
   id: "p001",
   title: "Museum Blockbuster",
   timeLimitMinutes: 20,
 
   passage: `
+Museum Blockbuster
+
 A. Since the 1980s, the term “blockbuster” has become the fashionable word for special spectacular museum, art gallery or science center exhibitions. These exhibitions have the ability to attract large crowds and often large corporate sponsors. Here is one of some existing definitions of blockbuster: Put by Elsen (1984), a blockbuster is a “... large scale loan exhibition that people who normally don’t go to museums will stand in line for hours to see...” James Rosenfield, writing in Direct Marketing in 1993, has described a successful blockbuster exhibition as a “... triumph of both curatorial and marketing skills...” My own definition for blockbuster is “a popular, high profile exhibition on display for a limited period, that attracts the general public, who are prepared to both stand in line and pay a fee in order to partake in the exhibition.” What both Elsen and Rosenfield omit in their descriptions of blockbusters, is that people are prepared to pay a fee to see a blockbuster, and that the term blockbuster can just as easily apply to a movie or a museum exhibition.
 
 B. Merely naming an exhibition or movie a blockbuster however, does not make it a blockbuster. The term can only apply when the item in question has had an overwhelmingly successful response from the public. However, in literature from both the UK and USA the other words that also start to appear in descriptions of blockbusters are “less scholarly”, “non-elitist” and “popularist”. Detractors argue that blockbusters are designed to appeal to the lowest common denominator, while others extol the virtues of encouraging scholars to cooperate on projects, and to provide exhibitions that cater for a broad selection of the community rather than an elite sector.
@@ -22,23 +24,60 @@ H. Perhaps the best pathway is to balance both blockbusters and regular exhibiti
 `,
 
   questions: [
-    // Questions 1–4
-    { id: 1, type: "paragraph", text: "A reason for changing the exhibition programs.", answer: "C" },
-    { id: 2, type: "paragraph", text: "The time people have to wait in a queue in order to enjoy exhibitions.", answer: "A" },
-    { id: 3, type: "paragraph", text: "Terms people used when referring to blockbuster.", answer: "B" },
-    { id: 4, type: "paragraph", text: "There was some controversy over confining target groups of blockbuster.", answer: "B" },
+    {
+      id: 1,
+      type: "paragraph_matching",
+      question: "A reason for changing the exhibition programs.",
+      correctAnswer: "C"
+    },
+    {
+      id: 2,
+      type: "paragraph_matching",
+      question: "The time people have to wait in a queue in order to enjoy exhibitions.",
+      correctAnswer: "A"
+    },
+    {
+      id: 3,
+      type: "paragraph_matching",
+      question: "Terms people used when referring to blockbuster.",
+      correctAnswer: "B"
+    },
+    {
+      id: 4,
+      type: "paragraph_matching",
+      question: "There was some controversy over confining target groups of blockbuster.",
+      correctAnswer: "B"
+    },
 
-    // Questions 5–8 (Summary)
-    { id: 5, type: "summary", text: "Instead of being visitors, people turned out to be ____.", answer: "customers" },
-    { id: 6, type: "summary", text: "Business nous and ____ were essential requirements.", answer: "public relation skills" },
-    { id: 7, type: "summary", text: "____ has contributed to linking museums and tourism.", answer: "museology" },
-    { id: 8, type: "summary", text: "Museums are seen mainly as ____.", answer: "tourist attractions" },
+    {
+      id: 5,
+      type: "summary",
+      question: "Instead of being visitors, people turned out to be ____.",
+      correctAnswer: "customers"
+    },
+    {
+      id: 6,
+      type: "summary",
+      question: "Business nous and ____ were essential requirements.",
+      correctAnswer: "public relation skills"
+    },
+    {
+      id: 7,
+      type: "summary",
+      question: "____ has contributed to linking museums and tourism.",
+      correctAnswer: "museology"
+    },
+    {
+      id: 8,
+      type: "summary",
+      question: "Museums are seen mainly as ____.",
+      correctAnswer: "tourist attractions"
+    },
 
-    // Questions 9–10
     {
       id: 9,
       type: "multi",
-      text: "Which TWO advantages are mentioned?",
+      question: "Which TWO advantages are mentioned?",
       options: {
         A: "To offer sufficient money to repair architectures.",
         B: "To maintain and increase visitor levels.",
@@ -46,68 +85,24 @@ H. Perhaps the best pathway is to balance both blockbusters and regular exhibiti
         D: "Being beneficial for local business.",
         E: "Being beneficial for directors."
       },
-      answer: ["A", "D"]
+      correctAnswer: ["A", "D"]
     },
 
-    // Questions 11–13
     {
       id: 11,
       type: "multi",
-      text: "Which THREE disadvantages are mentioned?",
+      question: "Which THREE disadvantages are mentioned?",
       options: {
-        A: "People hesitate to choose exhibitions.",
-        B: "Workers become tired of workloads.",
-        C: "Content becomes more entertaining than cultural.",
-        D: "General laborers perform additional tasks.",
-        E: "Huge capital invested in specialists.",
-        F: "Staff exposed to market pressure."
+        A: "People felt hesitated to choose exhibitions.",
+        B: "Workers has become tired of workloads.",
+        C: "The content has become more entertaining rather than cultural.",
+        D: "General laborers are required to perform additional tasks.",
+        E: "Huge amounts of capital invested in specialists.",
+        F: "Exposing staff to the pressures of the market place."
       },
-      answer: ["B", "C", "E"]
+      correctAnswer: ["B", "C", "E"]
     }
   ]
 };
 
-/* =========================
-   NATIJANI HISOBLASH LOGIKASI
-   ========================= */
-
-export function calculateResult(userAnswers) {
-  let correct = 0;
-
-  readingData.questions.forEach(q => {
-    const user = userAnswers[q.id];
-    if (!user) return;
-
-    if (Array.isArray(q.answer)) {
-      if (
-        Array.isArray(user) &&
-        user.length === q.answer.length &&
-        user.every(a => q.answer.includes(a))
-      ) {
-        correct++;
-      }
-    } else {
-      if (
-        String(user).trim().toLowerCase() ===
-        String(q.answer).trim().toLowerCase()
-      ) {
-        correct++;
-      }
-    }
-  });
-
-  const total = readingData.questions.length;
-  const band = calculateBand(correct);
-
-  return { correct, total, band };
-}
-
-function calculateBand(score) {
-  if (score >= 13) return 9;
-  if (score >= 11) return 8;
-  if (score >= 9) return 7;
-  if (score >= 7) return 6;
-  if (score >= 5) return 5;
-  if (score >= 3) return 4;
-  return 3;
-}
+export default readingData;
