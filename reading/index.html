@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>IELTS Reading</title>
+  <link rel="stylesheet" href="reading.css">
+</head>
+<body>
+
+<h2>📘 IELTS Reading Tests</h2>
+<div id="list"></div>
+
+<script src="data/index.js"></script>
+<script>
+const list = document.getElementById("list");
+
+READING_INDEX.forEach(t => {
+  const div = document.createElement("div");
+  div.className = "card";
+  div.innerHTML = `
+    <h3>Passage ${t.passage}: ${t.title}</h3>
+    <button onclick="start('${t.id}')">Start</button>
+  `;
+  list.appendChild(div);
+});
+
+function start(id){
+  location.href = "reading.html?id=" + id;
+}
+</script>
+
+</body>
+</html>
