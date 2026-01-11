@@ -1,22 +1,32 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>IELTS Reading Test</title>
   <link rel="stylesheet" href="reading.css">
 </head>
 <body>
 
-<header>
-  <h2 id="title"></h2>
+<header class="top-bar">
+  <span>📘 IELTS Reading</span>
   <span id="timer">20:00</span>
 </header>
 
-<div class="container">
-  <div id="passage"></div>
-  <div id="questions"></div>
+<div class="layout">
+  <div id="passage" class="passage"></div>
+  <div id="questions" class="questions"></div>
 </div>
 
-<button onclick="submitTest()">Submit Answers</button>
+<button id="submitBtn">Submit Answers</button>
+
+<script>
+  const id = new URLSearchParams(location.search).get("id");
+  if (!id) alert("Test ID topilmadi");
+
+  const s = document.createElement("script");
+  s.src = `data/${id}.js`;
+  document.body.appendChild(s);
+</script>
 
 <script src="reading.js"></script>
 </body>
