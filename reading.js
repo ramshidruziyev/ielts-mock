@@ -1,215 +1,122 @@
-/*********************************
- * IELTS READING MAIN ENGINE
- *********************************/
+// reading.js
 
-let readingData = null;
-let userAnswers = {};
-let timerInterval = null;
-let remainingSeconds = 0;
+const passageDiv = document.getElementById("passage");
+const questionsDiv = document.getElementById("questions");
+const titleEl = document.getElementById("testTitle");
+const timerEl = document.getElementById("timer");
+const submitBtn = document.getElementById("submitBtn");
 
-/* ===============================
-   LOAD TEST BY ID (?id=p001)
-================================ */
-function getTestId() {
-  const params = new URLSearchParams(window.location.search);
-  return params.get("id") || "p001";
-}
+// ===== GET TEST ID =====
+const params = new URLSearchParams(window.location.search);
+const testId = params.get("id") || "p001";
 
-function loadReadingData() {
-  const testId = getTestId();
+// ===== LOAD DATA FILE =====
+const script = document.createElement("script");
+script.src = `reading-data/${testId}.js`;
+script.onload = initTest;
+script.onerror = () => {
+  passageDiv.innerHTML = "❌ Test topilmadi";
+  questionsDiv.innerHTML = "";
+};
+document.body.appendChild(script);
 
-  const script = document.createElement("script");
-  script.src = `reading-data/${testId}.js`;
-  script.onload = () => {
-    initTest();
-  };
-  script.onerror = () => {
-    document.getElementById("passage").innerHTML =
-      "❌ Passage not found.";
-  };
-  document.body.appendChild(script);
-}
-
-/* ===============================
-   INIT TEST
-================================ */
+// ===== INIT =====
 function initTest() {
-  document.getElementById("testTitle").innerText = readingData.title;
-  document.getElementById("passage").innerHTML = enableHighlight(readingData.passage);
+  if (typeof readingData === "undefined") {
+    passageDiv.innerHTML = "❌ readingData topilmadi";
+    return;
+  }
+
+  titleEl.textContent = readingData.title;
+  passageDiv.innerText = readingData.passage;
+
   renderQuestions();
-  startTimer(readingData.timeLimitMinutes);
+  startTimer(readingData.timeLimitMinutes || 20);
 }
 
-/* ===============================
-   TIMER
-================================ */
-function startTimer(minutes) {
-  remainingSeconds = minutes * 60;
-  updateTimer();
-
-  timerInterval = setInterval(() => {
-    remainingSeconds--;
-    updateTimer();
-
-    if (remainingSeconds <= 0) {
-      clearInterval(timerInterval);
-      submitAnswers();
-    }
-  }, 1000);
-}
-
-function updateTimer() {
-  const min = String(Math.floor(remainingSeconds / 60)).padStart(2, "0");
-  const sec = String(remainingSeconds % 60).padStart(2, "0");
-  document.getElementById("timer").innerText = `${min}:${sec}`;
-}
-
-/* ===============================
-   RENDER QUESTIONS
-================================ */
+// ===== QUESTIONS =====
 function renderQuestions() {
-  const qBox = document.getElementById("questions");
-  qBox.innerHTML = "";
+  questionsDiv.innerHTML = "";
 
-  readingData.questions.forEach((q) => {
-    const div = document.createElement("div");
-    div.className = "question";
+  readingData.questions.forEach(q => {
+    const block = document.createElement("div");
+    block.className = "question";
+
+    let html = `<p><strong>${q.id}.</strong> ${q.text}</p>`;
 
     if (q.type === "paragraph_matching") {
-      div.innerHTML = `
-        <h4>${q.id}. ${q.text}</h4>
-        <input type="text" maxlength="1"
-          oninput="saveAnswer(${q.id}, this.value.toUpperCase())"
-          placeholder="A-G"/>
-      `;
+      html += `<input type="text" data-id="${q.id}" placeholder="A-G" />`;
     }
 
     if (q.type === "summary") {
-      div.innerHTML = `
-        <h4>${q.id}. ${q.text}</h4>
-        <input type="text"
-          oninput="saveAnswer(${q.id}, this.value.trim())"/>
-      `;
+      html += `<input type="text" data-id="${q.id}" placeholder="Answer" />`;
     }
 
     if (q.type === "multiple_choice") {
-      let optionsHTML = "";
-      for (const key in q.options) {
-        optionsHTML += `
+      Object.entries(q.options).forEach(([k, v]) => {
+        html += `
           <label>
-            <input type="checkbox"
-              onchange="toggleOption(${q.id}, '${key}')"/>
-            ${key}. ${q.options[key]}
-          </label><br/>
+            <input type="checkbox" name="q${q.id}" value="${k}">
+            ${k}. ${v}
+          </label><br>
         `;
-      }
-
-      div.innerHTML = `
-        <h4>${q.id}. ${q.text}</h4>
-        ${optionsHTML}
-      `;
+      });
     }
 
-    qBox.appendChild(div);
+    block.innerHTML = html;
+    questionsDiv.appendChild(block);
   });
 }
 
-/* ===============================
-   SAVE ANSWERS
-================================ */
-function saveAnswer(id, value) {
-  userAnswers[id] = value;
-}
-
-function toggleOption(id, option) {
-  if (!userAnswers[id]) userAnswers[id] = [];
-  if (userAnswers[id].includes(option)) {
-    userAnswers[id] = userAnswers[id].filter(o => o !== option);
-  } else {
-    userAnswers[id].push(option);
-  }
-}
-
-/* ===============================
-   SUBMIT & CHECK
-================================ */
-document.getElementById("submitBtn").addEventListener("click", submitAnswers);
-
-function submitAnswers() {
-  clearInterval(timerInterval);
-
+// ===== SUBMIT =====
+submitBtn.onclick = () => {
   let correct = 0;
-  let total = readingData.questions.length;
 
   readingData.questions.forEach(q => {
-    const user = userAnswers[q.id];
+    if (q.type === "paragraph_matching" || q.type === "summary") {
+      const input = document.querySelector(`input[data-id="${q.id}"]`);
+      if (!input) return;
+      if (input.value.trim().toLowerCase() === q.answer.toLowerCase()) {
+        correct++;
+        input.style.borderColor = "green";
+      } else {
+        input.style.borderColor = "red";
+      }
+    }
 
-    if (Array.isArray(q.answer)) {
-      if (
-        Array.isArray(user) &&
-        user.length === q.answer.length &&
-        user.every(a => q.answer.includes(a))
-      ) correct++;
-    } else {
-      if (
-        user &&
-        user.toString().toLowerCase() === q.answer.toString().toLowerCase()
-      ) correct++;
+    if (q.type === "multiple_choice") {
+      const checked = [...document.querySelectorAll(`input[name="q${q.id}"]:checked`)]
+        .map(i => i.value)
+        .sort()
+        .join("");
+
+      const answer = q.answer.sort().join("");
+      if (checked === answer) correct++;
     }
   });
 
-  showResult(correct, total);
+  const band = calcBand(correct, readingData.questions.length);
+  alert(`To‘g‘ri javoblar: ${correct}\nBand score: ${band}`);
+};
+
+// ===== BAND SCORE =====
+function calcBand(score, total) {
+  const ratio = score / total;
+  if (ratio >= 0.9) return 9;
+  if (ratio >= 0.8) return 8;
+  if (ratio >= 0.7) return 7;
+  if (ratio >= 0.6) return 6;
+  if (ratio >= 0.5) return 5;
+  return 4;
 }
 
-/* ===============================
-   SCORE + BAND
-================================ */
-function showResult(correct, total) {
-  const score = correct;
-  const band = calculateBand(score);
-
-  const box = document.getElementById("result");
-  box.style.display = "block";
-  box.innerHTML = `
-    <h3>✅ Result</h3>
-    <p>Correct answers: <b>${correct} / ${total}</b></p>
-    <p>Estimated IELTS Band: <b>${band}</b></p>
-  `;
+// ===== TIMER =====
+function startTimer(mins) {
+  let seconds = mins * 60;
+  setInterval(() => {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    timerEl.textContent = `${m}:${s.toString().padStart(2, "0")}`;
+    seconds--;
+  }, 1000);
 }
-
-function calculateBand(score) {
-  if (score <= 5) return "5.0";
-  if (score <= 7) return "5.5";
-  if (score <= 9) return "6.0";
-  if (score <= 11) return "6.5";
-  if (score <= 13) return "7.0";
-  if (score <= 15) return "7.5";
-  return "8.0+";
-}
-
-/* ===============================
-   TEXT HIGHLIGHT
-================================ */
-function enableHighlight(text) {
-  return `
-    <div onmouseup="highlightSelection()">
-      ${text.replace(/\n/g, "<br>")}
-    </div>
-  `;
-}
-
-function highlightSelection() {
-  const selection = window.getSelection();
-  if (!selection.rangeCount) return;
-
-  const range = selection.getRangeAt(0);
-  const span = document.createElement("span");
-  span.className = "highlight";
-  range.surroundContents(span);
-  selection.removeAllRanges();
-}
-
-/* ===============================
-   START
-================================ */
-loadReadingData();
