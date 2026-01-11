@@ -2,30 +2,31 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>IELTS Reading Test</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="reading.css"/>
 
   <style>
     body {
       margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: #f4f6fb;
-      color: #222;
+      font-family: Arial, sans-serif;
+      background: #f5f7fb;
     }
 
     header {
       background: #1f4fd8;
-      color: white;
-      padding: 14px;
-      font-size: 18px;
-      font-weight: bold;
+      color: #fff;
+      padding: 14px 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      font-size: 18px;
     }
 
     #timer {
-      background: white;
+      background: #fff;
       color: #1f4fd8;
       padding: 6px 12px;
       border-radius: 6px;
@@ -33,96 +34,75 @@
     }
 
     .container {
-      padding: 15px;
-      max-width: 1200px;
-      margin: auto;
+      padding: 16px;
     }
 
     #testTitle {
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
 
     .layout {
       display: flex;
-      gap: 15px;
+      gap: 16px;
     }
 
     #passage {
       flex: 1;
-      background: white;
-      padding: 15px;
+      background: #fff;
+      padding: 14px;
       border-radius: 8px;
-      line-height: 1.6;
-      white-space: pre-line;
-      height: 70vh;
+      height: 65vh;
       overflow-y: auto;
+      line-height: 1.6;
     }
 
     #questions {
       flex: 1;
-      background: white;
-      padding: 15px;
+      background: #fff;
+      padding: 14px;
       border-radius: 8px;
-      height: 70vh;
+      height: 65vh;
       overflow-y: auto;
     }
 
     .question {
-      margin-bottom: 20px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid #ddd;
+      margin-bottom: 16px;
     }
 
-    input[type="text"] {
-      width: 100%;
-      padding: 8px;
-      margin-top: 6px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-
-    label {
-      display: block;
-      margin: 6px 0;
-      cursor: pointer;
+    .question h4 {
+      margin: 0 0 6px;
     }
 
     button {
       width: 100%;
-      margin-top: 15px;
       padding: 14px;
+      margin-top: 16px;
       background: #1f4fd8;
-      color: white;
+      color: #fff;
       border: none;
       border-radius: 8px;
       font-size: 16px;
-      font-weight: bold;
       cursor: pointer;
     }
 
     button:hover {
-      background: #173cb3;
+      background: #163bb5;
     }
 
     #result {
-      margin-top: 20px;
-      background: white;
-      padding: 15px;
+      margin-top: 16px;
+      background: #fff;
+      padding: 14px;
       border-radius: 8px;
+      display: none;
     }
 
-    @media (max-width: 900px) {
-      .layout {
-        flex-direction: column;
-      }
-
-      #passage,
-      #questions {
-        height: auto;
-      }
+    .highlight {
+      background: yellow;
     }
   </style>
 </head>
+
 <body>
 
   <!-- HEADER -->
@@ -136,6 +116,7 @@
     <h2 id="testTitle">Loading...</h2>
 
     <div class="layout">
+
       <!-- PASSAGE -->
       <div id="passage">
         Loading passage...
@@ -145,6 +126,7 @@
       <div id="questions">
         Loading questions...
       </div>
+
     </div>
 
     <!-- SUBMIT -->
@@ -154,7 +136,10 @@
     <div id="result"></div>
   </div>
 
-  <!-- SCRIPT -->
+  <!-- 📌 TEST DATA INDEX -->
+  <script src="reading-data/index.js"></script>
+
+  <!-- 📌 MAIN LOGIC -->
   <script src="reading.js"></script>
 
 </body>
