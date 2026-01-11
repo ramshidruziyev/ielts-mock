@@ -2,94 +2,67 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>IELTS Reading Tests</title>
+  <title>IELTS Reading</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <link rel="stylesheet" href="reading.css">
+
   <style>
     body {
       margin: 0;
       font-family: Arial, sans-serif;
       background: #f5f7fb;
-    }
-
-    .top-bar {
-      background: #1e5bd8;
-      color: #fff;
-      padding: 14px;
-      font-size: 18px;
-      font-weight: bold;
-    }
-
-    .container {
       padding: 16px;
     }
 
-    .test-card {
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .test {
       background: #fff;
-      border-radius: 10px;
       padding: 16px;
-      margin-bottom: 14px;
+      border-radius: 10px;
+      margin-bottom: 15px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.08);
     }
 
-    .test-card h3 {
-      margin: 0 0 6px;
-      font-size: 16px;
+    .title {
+      font-weight: bold;
+      margin-bottom: 10px;
     }
 
-    .test-card p {
-      margin: 0 0 12px;
-      color: #666;
-    }
-
-    .test-card button {
-      width: 100%;
+    .start {
+      display: block;
       padding: 12px;
-      background: #1e5bd8;
+      background: #2563eb;
       color: #fff;
-      border: none;
+      text-align: center;
       border-radius: 8px;
-      font-size: 15px;
-      cursor: pointer;
+      text-decoration: none;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
 
-  <div class="top-bar">📘 IELTS Reading Tests</div>
+  <h2>📘 IELTS Reading Tests</h2>
 
-  <div class="container" id="tests">
-    Loading tests...
-  </div>
+  <div id="tests"></div>
 
-  <!-- 1️⃣ TESTLAR RO‘YXATI -->
   <script src="data/index.js"></script>
-
-  <!-- 2️⃣ RO‘YXATNI CHIQARISH -->
   <script>
-    const container = document.getElementById("tests");
+    const box = document.getElementById("tests");
 
-    if (!window.readingTests || readingTests.length === 0) {
-      container.innerHTML = "<p>No reading tests found.</p>";
-    } else {
-      container.innerHTML = "";
-      readingTests.forEach(test => {
-        const card = document.createElement("div");
-        card.className = "test-card";
-
-        card.innerHTML = `
-          <h3>${test.title}</h3>
-          <p>Passage ${test.id.replace("p","")}</p>
-          <button onclick="startTest('${test.id}')">Start</button>
-        `;
-
-        container.appendChild(card);
-      });
-    }
-
-    function startTest(id) {
-      window.location.href = `reading.html?id=${id}`;
-    }
+    window.readingTests.forEach(t => {
+      box.innerHTML += `
+        <div class="test">
+          <div class="title">Passage ${t.id.replace("p","")} – ${t.title}</div>
+          <a class="start" href="reading.html?id=${t.id}">START</a>
+        </div>
+      `;
+    });
   </script>
 
 </body>
