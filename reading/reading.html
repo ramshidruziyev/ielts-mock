@@ -3,44 +3,29 @@
 <head>
   <meta charset="UTF-8" />
   <title>IELTS Reading</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <link rel="stylesheet" href="reading.css" />
 </head>
 <body>
 
-<header>
-  <div>📘 IELTS Reading</div>
+<header class="top">
+  <h2>📘 IELTS Reading</h2>
   <div id="timer">20:00</div>
 </header>
 
 <main class="container">
+  <section class="passage">
+    <h1 id="title"></h1>
+    <div id="passage"></div>
+  </section>
 
-  <!-- TEST TITLE -->
-  <h2 id="testTitle"></h2>
-
-  <!-- LAYOUT -->
-  <div class="layout">
-
-    <!-- PASSAGE -->
-    <section id="passage" class="box"></section>
-
-    <!-- QUESTIONS -->
-    <section id="questions" class="box"></section>
-
-  </div>
-
-  <button id="submitBtn">Submit Answers</button>
-
-  <div id="result"></div>
-
+  <section class="questions">
+    <form id="questionsForm"></form>
+    <button id="submitBtn">Submit Answers</button>
+  </section>
 </main>
 
-<!-- DATA -->
 <script src="data/index.js"></script>
-
-<!-- ENGINE -->
+<script src="data/p001.js"></script>
 <script src="reading.js"></script>
-
 </body>
 </html>
