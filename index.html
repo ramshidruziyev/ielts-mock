@@ -1,50 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>IELTS Mock</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <style>
     body {
       margin: 0;
       font-family: Arial, sans-serif;
       background: #f4f6fb;
-    }
-    h1 {
-      text-align: center;
-      margin: 30px 0;
-    }
-    .container {
-      max-width: 900px;
-      margin: auto;
       padding: 20px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-    }
-    .card {
-      background: white;
-      border-radius: 12px;
-      padding: 30px;
       text-align: center;
-      cursor: pointer;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-      transition: 0.2s;
     }
-    .card:hover {
-      transform: translateY(-5px);
+
+    h1 {
+      margin-bottom: 30px;
     }
-    .card h2 {
-      margin: 15px 0 0;
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      max-width: 500px;
+      margin: auto;
     }
+
+    .card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      font-weight: bold;
+      text-decoration: none;
+      color: #000;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    }
+
     .full {
       grid-column: span 2;
       background: #2563eb;
-      color: white;
+      color: #fff;
     }
+
     .results {
       background: #16a34a;
-      color: white;
+      color: #fff;
+    }
+
+    .speaking {
+      margin-top: 20px;
+      background: #dc2626;
+      color: #fff;
+      padding: 15px;
+      border-radius: 12px;
+      display: block;
+      text-decoration: none;
+      font-weight: bold;
     }
   </style>
 </head>
@@ -52,38 +63,17 @@
 
   <h1>IELTS Mock</h1>
 
-  <div class="container">
-    <div class="card" onclick="location.href='listening.html'">
-      🎧
-      <h2>Listening</h2>
-    </div>
+  <div class="grid">
+    <a class="card" href="listening.html">Listening</a>
+    <a class="card" href="reading/">Reading</a>
+    <a class="card" href="writing.html">Writing</a>
+    <a class="card" href="vocabulary.html">Vocabulary</a>
 
-    <!-- 🔥 MUHIM JOY -->
-    <div class="card" onclick="location.href='reading/'">
-      📘
-      <h2>Reading</h2>
-    </div>
-
-    <div class="card" onclick="location.href='writing.html'">
-      ✍️
-      <h2>Writing</h2>
-    </div>
-
-    <div class="card" onclick="location.href='vocabulary.html'">
-      🧠
-      <h2>Vocabulary</h2>
-    </div>
-
-    <div class="card full">
-      📋
-      <h2>Full Mock</h2>
-    </div>
-
-    <div class="card results">
-      📊
-      <h2>My Mock Results</h2>
-    </div>
+    <a class="card full" href="#">Full Mock</a>
+    <a class="card results" href="#">My Mock Results</a>
   </div>
+
+  <a class="speaking" href="speaking.html">🎤 Speaking Practice</a>
 
 </body>
 </html>
