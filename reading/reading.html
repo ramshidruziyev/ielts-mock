@@ -1,31 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <title>IELTS Reading</title>
-  <link rel="stylesheet" href="reading.css" />
+  <title>IELTS Reading Test</title>
+  <link rel="stylesheet" href="reading.css">
 </head>
 <body>
 
-<header class="top">
-  <h2>📘 IELTS Reading</h2>
-  <div id="timer">20:00</div>
+<header>
+  <h2 id="title"></h2>
+  <span id="timer">20:00</span>
 </header>
 
-<main class="container">
-  <section class="passage">
-    <h1 id="title"></h1>
-    <div id="passage"></div>
-  </section>
+<div class="container">
+  <div id="passage"></div>
+  <div id="questions"></div>
+</div>
 
-  <section class="questions">
-    <form id="questionsForm"></form>
-    <button id="submitBtn">Submit Answers</button>
-  </section>
-</main>
+<button onclick="submitTest()">Submit Answers</button>
 
-<script src="data/index.js"></script>
-<script src="data/p001.js"></script>
 <script src="reading.js"></script>
 </body>
 </html>
