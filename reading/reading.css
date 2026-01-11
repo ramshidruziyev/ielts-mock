@@ -1,9 +1,11 @@
-body{font-family:Arial;background:#f5f7fa;margin:0;padding:15px}
-header{display:flex;justify-content:space-between;background:#2563eb;color:#fff;padding:10px}
-.container{display:flex;gap:15px}
-#passage,#questions{background:#fff;padding:10px;border-radius:6px;width:50%}
-.para{padding:5px;cursor:pointer}
-.highlight{background:#fff3bf}
-.card{background:#fff;padding:10px;margin:10px;border-radius:6px}
-button{background:#2563eb;color:#fff;border:none;padding:10px;width:100%;margin-top:10px}
-.q{margin-bottom:10px}
+body { font-family: Arial; margin:0; background:#f5f7fa }
+.top-bar { background:#1e5bd7; color:#fff; padding:10px; display:flex; justify-content:space-between }
+.layout { display:flex; gap:10px; padding:10px }
+.passage, .questions { width:50%; background:#fff; padding:10px; height:70vh; overflow:auto }
+.paragraph { padding:6px; cursor:pointer }
+.highlight { background: yellow }
+.question { margin-bottom:15px }
+button { width:100%; padding:15px; background:#1e5bd7; color:#fff; border:0; font-size:18px }
+
+.test-card { background:#fff; margin:10px; padding:15px }
+.start-btn { display:block; background:#1e5bd7; color:#fff; text-align:center; padding:10px; text-decoration:none }
