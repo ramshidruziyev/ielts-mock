@@ -1,151 +1,163 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<title>IELTS Mock</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8" />
+  <title>IELTS Mock</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-<style>
-* {
-  box-sizing: border-box;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-}
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
 
-body {
-  margin: 0;
-  background: linear-gradient(180deg, #f8fafc, #eef2ff);
-  color: #0f172a;
-  text-align: center;
-  padding: 24px;
-}
+    body {
+      margin: 0;
+      padding: 0;
+      background: #f4f6fb;
+      color: #222;
+    }
 
-/* Title */
-h1 {
-  font-size: 32px;
-  margin-bottom: 24px;
-}
+    h1 {
+      text-align: center;
+      margin: 24px 0;
+    }
 
-/* Grid */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-  max-width: 520px;
-  margin: auto;
-}
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 16px;
+    }
 
-/* Cards */
-.card {
-  background: #ffffff;
-  border-radius: 18px;
-  padding: 22px 14px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-  font-size: 18px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: transform .15s, box-shadow .15s;
-}
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
 
-.card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 16px 35px rgba(0,0,0,0.12);
-}
+    .card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 24px;
+      text-align: center;
+      text-decoration: none;
+      color: #222;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+      transition: transform 0.2s;
+    }
 
-/* Icons */
-.icon {
-  font-size: 28px;
-  display: block;
-  margin-bottom: 8px;
-}
+    .card:hover {
+      transform: translateY(-4px);
+    }
 
-/* Special cards */
-.full {
-  background: linear-gradient(135deg, #2563eb, #1d4ed8);
-  color: white;
-}
+    .card span {
+      display: block;
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 10px;
+    }
 
-.results {
-  background: linear-gradient(135deg, #22c55e, #16a34a);
-  color: white;
-}
+    .full {
+      grid-column: span 2;
+      background: #2563eb;
+      color: #fff;
+    }
 
-/* Big buttons */
-.big-btn {
-  margin: 20px auto 0;
-  max-width: 520px;
-  padding: 20px;
-  border-radius: 22px;
-  font-size: 20px;
-  font-weight: 700;
-  color: white;
-  cursor: pointer;
-}
+    .results {
+      grid-column: span 2;
+      background: #16a34a;
+      color: #fff;
+    }
 
-.speaking {
-  background: linear-gradient(135deg, #ef4444, #dc2626);
-}
+    .speaking {
+      grid-column: span 2;
+      background: #dc2626;
+      color: #fff;
+    }
 
-.logout {
-  margin-top: 30px;
-  background: #0f172a;
-  color: white;
-  padding: 12px 28px;
-  border-radius: 12px;
-  display: inline-block;
-  cursor: pointer;
-}
-</style>
+    .logout {
+      margin-top: 24px;
+      text-align: center;
+    }
 
-<script>
-const email = localStorage.getItem("user_email");
-if (!email) {
-  window.location.replace("register.html");
-}
-</script>
+    .logout a {
+      display: inline-block;
+      background: #111827;
+      color: #fff;
+      padding: 12px 28px;
+      border-radius: 24px;
+      text-decoration: none;
+    }
 
+    @media (max-width: 600px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .full,
+      .results,
+      .speaking {
+        grid-column: span 1;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<h1>IELTS Mock</h1>
+  <h1>IELTS Mock</h1>
 
-<div class="grid">
-  <div class="card" onclick="location.href='listening.html'">
-    <span class="icon">🎧</span>Listening
+  <div class="container">
+    <div class="grid">
+
+      <!-- LISTENING -->
+      <a class="card" href="listening.html">
+        🎧
+        <span>Listening</span>
+      </a>
+
+      <!-- READING (ENG MUHIMI) -->
+      <a class="card" href="reading/reading.html">
+        📘
+        <span>Reading</span>
+      </a>
+
+      <!-- WRITING -->
+      <a class="card" href="#">
+        ✍️
+        <span>Writing</span>
+      </a>
+
+      <!-- VOCABULARY -->
+      <a class="card" href="vocabulary.html">
+        🧠
+        <span>Vocabulary</span>
+      </a>
+
+      <!-- FULL MOCK -->
+      <a class="card full" href="#">
+        📋
+        <span>Full Mock</span>
+      </a>
+
+      <!-- RESULTS -->
+      <a class="card results" href="#">
+        📊
+        <span>My Mock Results</span>
+      </a>
+
+      <!-- SPEAKING -->
+      <a class="card speaking" href="speaking.html">
+        🎤
+        <span>Speaking Practice</span>
+      </a>
+
+    </div>
+
+    <div class="logout">
+      <a href="register.html">Logout</a>
+    </div>
   </div>
-
-  <div class="card" onclick="location.href='reading.html'">
-    <span class="icon">📘</span>Reading
-  </div>
-
-  <div class="card" onclick="location.href='writing.html'">
-    <span class="icon">✍️</span>Writing
-  </div>
-
-  <div class="card" onclick="location.href='vocabulary.html'">
-    <span class="icon">🧠</span>Vocabulary
-  </div>
-
-  <div class="card full" onclick="location.href='fullmock.html'">
-    <span class="icon">📋</span>Full Mock
-  </div>
-
-  <div class="card results" onclick="location.href='results.html'">
-    <span class="icon">📊</span>My Mock Results
-  </div>
-</div>
-
-<div class="big-btn speaking" onclick="location.href='speaking.html'">
-🎙️ Speaking Practice
-</div>
-
-<div class="logout" onclick="logout()">Logout</div>
-
-<script>
-function logout() {
-  localStorage.removeItem("user_email");
-  location.href = "register.html";
-}
-</script>
 
 </body>
 </html>
