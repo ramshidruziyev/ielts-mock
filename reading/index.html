@@ -1,68 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>IELTS Reading</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <link rel="stylesheet" href="reading.css">
-
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f5f7fb;
-      padding: 16px;
-    }
-
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .test {
-      background: #fff;
-      padding: 16px;
-      border-radius: 10px;
-      margin-bottom: 15px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-    }
-
-    .title {
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-
-    .start {
-      display: block;
-      padding: 12px;
-      background: #2563eb;
-      color: #fff;
-      text-align: center;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: bold;
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <title>IELTS Reading Tests</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="reading.css" />
 </head>
 <body>
 
-  <h2>📘 IELTS Reading Tests</h2>
+  <header class="top-bar">
+    📘 IELTS Reading Tests
+  </header>
 
-  <div id="tests"></div>
+  <main id="tests" class="tests-list">
+    <p>Loading tests...</p>
+  </main>
 
+  <!-- DATA -->
   <script src="data/index.js"></script>
-  <script>
-    const box = document.getElementById("tests");
 
-    window.readingTests.forEach(t => {
-      box.innerHTML += `
-        <div class="test">
-          <div class="title">Passage ${t.id.replace("p","")} – ${t.title}</div>
-          <a class="start" href="reading.html?id=${t.id}">START</a>
-        </div>
-      `;
-    });
+  <!-- RENDER -->
+  <script>
+    const container = document.getElementById("tests");
+
+    if (!window.readingTests || window.readingTests.length === 0) {
+      container.innerHTML = "<p>No reading tests found.</p>";
+    } else {
+      container.innerHTML = "";
+      window.readingTests.forEach(test => {
+        const div = document.createElement("div");
+        div.className = "test-card";
+        div.innerHTML = `
+          <h3>Passage ${test.number}: ${test.title}</h3>
+          <a class="start-btn" href="reading.html?id=${test.id}">
+            Start
+          </a>
+        `;
+        container.appendChild(div);
+      });
+    }
   </script>
 
 </body>
