@@ -8,70 +8,90 @@
   <style>
     body {
       margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
       background: #f4f6fb;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial;
+      color: #1f2937;
     }
 
-    .header {
-      background: #1e5bff;
+    /* HEADER */
+    header {
+      background: #2563eb;
       color: #fff;
-      padding: 16px;
-      font-size: 20px;
-      font-weight: bold;
+      padding: 14px 18px;
+      font-size: 18px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
+    /* CONTAINER */
     .container {
-      padding: 16px;
+      max-width: 900px;
+      margin: 20px auto;
+      padding: 0 16px;
     }
 
-    .card {
-      background: #fff;
+    /* TEST CARD */
+    .test-card {
+      background: #ffffff;
       border-radius: 12px;
       padding: 16px;
       margin-bottom: 16px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+    }
+
+    .test-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 12px;
     }
 
     .badge {
       display: inline-block;
-      background: #2ecc71;
+      background: #22c55e;
       color: #fff;
       font-size: 12px;
       padding: 4px 8px;
       border-radius: 999px;
-      margin-bottom: 6px;
-    }
-
-    .title {
-      font-size: 18px;
-      font-weight: 600;
-      margin: 6px 0 12px;
+      margin-bottom: 8px;
     }
 
     .start-btn {
       width: 100%;
-      background: #1e5bff;
-      color: #fff;
-      border: none;
-      border-radius: 10px;
       padding: 12px;
-      font-size: 16px;
+      border-radius: 10px;
+      border: none;
+      background: #2563eb;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 600;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
 
     .start-btn:hover {
-      opacity: 0.9;
+      background: #1d4ed8;
     }
   </style>
 </head>
+
 <body>
 
-  <div class="header">📘 IELTS Reading Tests</div>
+  <!-- HEADER -->
+  <header>
+    📘 IELTS Reading Tests
+  </header>
 
+  <!-- CONTENT -->
   <div class="container" id="list">
     <!-- JS orqali testlar chiqadi -->
   </div>
 
+  <!-- DATA -->
   <script src="data/index.js"></script>
 </body>
 </html>
