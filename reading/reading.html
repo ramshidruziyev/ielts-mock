@@ -2,26 +2,25 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>IELTS Reading</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IELTS Reading Test</title>
   <link rel="stylesheet" href="reading.css" />
 </head>
 <body>
 
-<header class="top-bar">
-  <span>📘 IELTS Reading</span>
-  <span id="timer">20:00</span>
+<header class="reading-header">
+  <h1 id="test-title">Reading Test</h1>
+  <div id="timer">20:00</div>
 </header>
 
-<main id="app">
-  <p style="padding:20px">Loading test...</p>
+<main class="reading-container">
+  <section class="passage" id="passage"></section>
+  <section class="questions" id="questions"></section>
 </main>
 
-<footer class="bottom-bar">
+<div class="actions">
   <button id="submitBtn">Submit Answers</button>
-</footer>
+</div>
 
-<!-- MUHIM: JS eng oxirida -->
 <script src="reading.js"></script>
 </body>
 </html>
