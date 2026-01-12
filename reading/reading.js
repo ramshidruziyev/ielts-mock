@@ -1,76 +1,75 @@
-// reading.js
+// ===============================
+// IELTS Reading Main JS
+// ===============================
 
-const params = new URLSearchParams(location.search);
+const params = new URLSearchParams(window.location.search);
 const testId = params.get("id");
 
 if (!testId) {
   alert("Test ID yo‘q");
-  throw new Error("Missing test id");
+  throw new Error("No test id");
 }
 
-/* =============================
-   DYNAMIC DATA LOADER (YAKKA)
-============================= */
+// ===== Dynamic data loader =====
 const script = document.createElement("script");
 script.src = `data/${testId}.js`;
-script.defer = true;
 
 script.onload = () => {
   if (!window.readingData) {
     alert("Reading data yuklanmadi!");
     return;
   }
-  init(window.readingData);
+  initReading(window.readingData);
 };
 
 script.onerror = () => {
   alert("Test topilmadi: " + testId);
 };
 
-document.head.appendChild(script);
+document.body.appendChild(script);
 
-/* =============================
-   INIT
-============================= */
-function init(data) {
-  renderPassage(data.passage);
+// ===============================
+// INIT
+// ===============================
+function initReading(data) {
+  document.getElementById("passage").innerHTML = data.passage;
   renderQuestions(data.questions);
   startTimer(data.time || 20);
 }
 
-/* =============================
-   PASSAGE
-============================= */
-function renderPassage(html) {
-  document.getElementById("passage").innerHTML = html;
-}
-
-/* =============================
-   QUESTIONS
-============================= */
-function renderQuestions(list) {
+// ===============================
+// QUESTIONS
+// ===============================
+function renderQuestions(questions) {
   const box = document.getElementById("questions");
   box.innerHTML = "";
 
-  list.forEach(q => {
+  questions.forEach(q => {
     const div = document.createElement("div");
-    div.className = "q";
+    div.className = "question-box";
 
-    if (q.type === "paragraph" || q.type === "input") {
+    if (q.type === "paragraph") {
       div.innerHTML = `
-        <p>${q.id}.</p>
+        <p>${q.id}. Which paragraph?</p>
+        <input type="text" data-answer="${q.answer}">
+      `;
+    }
+
+    if (q.type === "input") {
+      div.innerHTML = `
+        <p>${q.id}. Complete:</p>
         <input type="text" data-answer="${q.answer}">
       `;
     }
 
     if (q.type === "multi") {
-      div.innerHTML = `<p>${q.id}.</p>`;
+      div.innerHTML = `<p>${q.id}. Choose ${q.limit}</p>`;
       Object.entries(q.options || {}).forEach(([k, v]) => {
         div.innerHTML += `
           <label>
             <input type="checkbox" name="q${q.id}" value="${k}" data-limit="${q.limit}">
             ${k}. ${v}
-          </label>
+          </label><br>
         `;
       });
     }
@@ -78,34 +77,34 @@ function renderQuestions(list) {
     box.appendChild(div);
   });
 
-  applyLimits();
+  applyCheckboxLimits();
 }
 
-/* =============================
-   CHECKBOX LIMIT
-============================= */
-function applyLimits() {
+// ===============================
+// CHECKBOX LIMIT
+// ===============================
+function applyCheckboxLimits() {
   document.querySelectorAll("input[type=checkbox]").forEach(cb => {
-    cb.onchange = () => {
+    cb.addEventListener("change", () => {
       const name = cb.name;
-      const limit = +cb.dataset.limit;
+      const limit = parseInt(cb.dataset.limit);
       const checked = document.querySelectorAll(`input[name="${name}"]:checked`);
       if (checked.length > limit) cb.checked = false;
-    };
+    });
   });
 }
 
-/* =============================
-   TIMER
-============================= */
+// ===============================
+// TIMER
+// ===============================
 function startTimer(min) {
-  let t = min * 60;
+  let sec = min * 60;
   const el = document.getElementById("timer");
 
   setInterval(() => {
-    const m = String(Math.floor(t / 60)).padStart(2, "0");
-    const s = String(t % 60).padStart(2, "0");
+    const m = String(Math.floor(sec / 60)).padStart(2, "0");
+    const s = String(sec % 60).padStart(2, "0");
     el.textContent = `${m}:${s}`;
-    if (t > 0) t--;
+    if (sec > 0) sec--;
   }, 1000);
 }
