@@ -1,3 +1,14 @@
-window.readingTests = [
+const readingTests = [
   { id: "p001", title: "Museum Blockbuster" }
 ];
+
+const list = document.getElementById("list");
+
+readingTests.forEach(t => {
+  const btn = document.createElement("button");
+  btn.textContent = t.title;
+  btn.onclick = () => {
+    location.href = `reading.html?id=${t.id}`;
+  };
+  list.appendChild(btn);
+});
