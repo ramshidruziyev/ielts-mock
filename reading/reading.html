@@ -2,44 +2,41 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>IELTS Reading Test</title>
-  <link rel="stylesheet" href="reading.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" href="reading.css" />
 </head>
 <body>
 
-<!-- TOP BAR -->
-<header class="top-bar">
-  <div class="top-left">📘 IELTS Reading</div>
-  <div class="top-right">
-    ⏱ <span id="timer">20:00</span>
-  </div>
-</header>
+  <!-- TOP BAR -->
+  <header class="top-bar">
+    <div class="title">📘 IELTS Reading</div>
+    <div class="timer" id="timer">20:00</div>
+  </header>
 
-<!-- MAIN TEST AREA -->
-<div class="test-container">
+  <!-- MAIN LAYOUT -->
+  <main class="reading-layout">
 
-  <!-- PASSAGE -->
-  <section class="passage-panel">
-    <div id="passage" class="passage-content">
-      <!-- JS passage shu yerga yuklaydi -->
-    </div>
-  </section>
+    <!-- PASSAGE -->
+    <section id="passage" class="passage">
+      <!-- reading.js bu yerga passage joylaydi -->
+    </section>
 
-  <!-- QUESTIONS -->
-  <section class="questions-panel">
-    <div id="questions" class="questions-content">
-      <!-- JS savollarni shu yerga yuklaydi -->
-    </div>
-  </section>
+    <!-- QUESTIONS -->
+    <section id="questions" class="questions">
+      <!-- reading.js bu yerga savollarni joylaydi -->
+    </section>
 
-</div>
+  </main>
 
-<!-- SUBMIT -->
-<footer class="submit-bar">
-  <button id="submitBtn">Submit Answers</button>
-</footer>
+  <!-- SUBMIT -->
+  <footer class="submit-bar">
+    <button id="submitBtn">Submit Answers</button>
+  </footer>
 
-<script src="reading.js"></script>
+  <!-- ENGINE -->
+  <script src="reading.js"></script>
+
 </body>
 </html>
