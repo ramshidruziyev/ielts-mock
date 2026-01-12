@@ -4,30 +4,56 @@
   <meta charset="UTF-8" />
   <title>IELTS Reading Test</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- STYLE -->
   <link rel="stylesheet" href="reading.css" />
 </head>
 <body>
 
-<header class="top-bar">
-  <div class="top-left">📘 IELTS Reading</div>
-  <div id="timer">20:00</div>
-</header>
+  <!-- ===== TOP BAR ===== -->
+  <header class="top-bar">
+    <div class="top-left">
+      📘 <span>IELTS Reading</span>
+    </div>
+    <div class="top-right">
+      <span id="timer">20:00</span>
+    </div>
+  </header>
 
-<main class="layout">
-  <section id="passage" class="panel"></section>
-  <section id="questions" class="panel"></section>
-</main>
+  <!-- ===== MAIN LAYOUT ===== -->
+  <main class="reading-layout">
 
-<footer class="bottom-bar">
-  <span>Score: <b id="score">0</b></span>
-  <div>
-    <button id="resetBtn">Reset</button>
-    <button id="submitBtn">Submit</button>
-  </div>
-</footer>
+    <!-- PASSAGE -->
+    <section class="panel passage-panel">
+      <div id="passage">
+        <!-- JS bu yerga MATN joylaydi -->
+      </div>
+    </section>
 
-<!-- FAQAT BITTA SCRIPT -->
-<script src="reading.js"></script>
+    <!-- QUESTIONS -->
+    <section class="panel questions-panel">
+      <div id="questions">
+        <!-- JS bu yerga SAVOLLAR joylaydi -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== BOTTOM BAR ===== -->
+  <footer class="bottom-bar">
+    <div class="score">
+      Score: <strong id="score">0</strong>
+    </div>
+
+    <div class="actions">
+      <button id="resetBtn">Reset</button>
+      <button id="submitBtn">Submit</button>
+    </div>
+  </footer>
+
+  <!-- ===== MAIN LOGIC ===== -->
+  <!-- FAQAT BITTA JS -->
+  <script src="reading.js"></script>
 
 </body>
 </html>
