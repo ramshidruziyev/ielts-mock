@@ -81,3 +81,15 @@ window.readingData = {
 <label><input type="checkbox" /> F. Exposing staff to the pressures of the market place</label>
 `
 };
+answers: {
+  1: "C",
+  2: "A",
+  3: "B",
+  4: "B",
+  5: "customers",
+  6: "public relation skills",
+  7: "museology",
+  8: "tourist attractions",
+  9: ["A","D"],
+  11: ["B","C","E"]
+}
