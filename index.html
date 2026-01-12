@@ -1,79 +1,165 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>IELTS Mock</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <style>
+    :root {
+      --blue: #2563eb;
+      --green: #16a34a;
+      --red: #dc2626;
+      --dark: #0f172a;
+      --glass: rgba(255,255,255,0.75);
+      --blur: blur(14px);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f4f6fb;
-      padding: 20px;
-      text-align: center;
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(180deg, #eef2ff, #f8fafc);
+      color: var(--dark);
     }
 
     h1 {
-      margin-bottom: 30px;
+      text-align: center;
+      margin: 32px 0 24px;
+      font-size: 34px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .container {
+      max-width: 920px;
+      margin: auto;
+      padding: 0 16px 50px;
     }
 
     .grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 15px;
-      max-width: 500px;
-      margin: auto;
+      gap: 18px;
+      margin-bottom: 22px;
     }
 
     .card {
-      background: #fff;
-      padding: 20px;
-      border-radius: 12px;
-      font-weight: bold;
-      text-decoration: none;
-      color: #000;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+      background: var(--glass);
+      backdrop-filter: var(--blur);
+      border-radius: 22px;
+      padding: 28px 20px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow:
+        0 15px 35px rgba(0,0,0,0.08),
+        inset 0 1px 0 rgba(255,255,255,0.4);
+      transition: all 0.25s ease;
     }
 
-    .full {
-      grid-column: span 2;
-      background: #2563eb;
-      color: #fff;
-    }
-
-    .results {
-      background: #16a34a;
-      color: #fff;
-    }
-
-    .speaking {
-      margin-top: 20px;
-      background: #dc2626;
-      color: #fff;
-      padding: 15px;
-      border-radius: 12px;
+    .card span {
       display: block;
-      text-decoration: none;
-      font-weight: bold;
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    .card:hover {
+      transform: translateY(-6px) scale(1.02);
+      box-shadow: 0 25px 45px rgba(0,0,0,0.15);
+    }
+
+    .primary {
+      background: linear-gradient(135deg, #2563eb, #1e40af);
+      color: white;
+    }
+
+    .success {
+      background: linear-gradient(135deg, #16a34a, #166534);
+      color: white;
+    }
+
+    .danger {
+      background: linear-gradient(135deg, #dc2626, #7f1d1d);
+      color: white;
+      margin-top: 18px;
+    }
+
+    .logout {
+      margin: 34px auto 0;
+      display: block;
+      background: #020617;
+      color: white;
+      border: none;
+      border-radius: 18px;
+      padding: 16px 34px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+      transition: transform 0.2s;
+    }
+
+    .logout:hover {
+      transform: scale(1.05);
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 28px;
+      }
+
+      .card {
+        padding: 24px 16px;
+      }
     }
   </style>
 </head>
-<body>
 
+<body>
   <h1>IELTS Mock</h1>
 
-  <div class="grid">
-    <a class="card" href="listening.html">Listening</a>
-    <a class="card" href="reading/">Reading</a>
-    <a class="card" href="writing.html">Writing</a>
-    <a class="card" href="vocabulary.html">Vocabulary</a>
+  <div class="container">
+    <div class="grid">
+      <div class="card" onclick="location.href='listening.html'">
+        <span>🎧</span>
+        Listening
+      </div>
+      <div class="card" onclick="location.href='reading/'">
+        <span>📘</span>
+        Reading
+      </div>
+      <div class="card" onclick="location.href='writing.html'">
+        <span>✍️</span>
+        Writing
+      </div>
+      <div class="card" onclick="location.href='vocabulary.html'">
+        <span>🧠</span>
+        Vocabulary
+      </div>
+    </div>
 
-    <a class="card full" href="#">Full Mock</a>
-    <a class="card results" href="#">My Mock Results</a>
+    <div class="grid">
+      <div class="card primary">
+        <span>📋</span>
+        Full Mock
+      </div>
+      <div class="card success">
+        <span>📊</span>
+        My Mock Results
+      </div>
+    </div>
+
+    <div class="card danger">
+      <span>🎤</span>
+      Speaking Practice
+    </div>
+
+    <button class="logout">Logout</button>
   </div>
-
-  <a class="speaking" href="speaking.html">🎤 Speaking Practice</a>
-
 </body>
 </html>
