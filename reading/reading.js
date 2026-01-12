@@ -1,94 +1,115 @@
-let timer, timeLeft;
+// reading.js
 
-window.onload = () => {
-  if (!window.readingData) return;
-  renderTest();
-  startTimer(readingData.timeLimitMinutes);
-};
+const app = document.getElementById("app");
+const timerEl = document.getElementById("timer");
 
-function renderTest() {
-  const passageBox = document.getElementById("passage");
-  const qBox = document.getElementById("questions");
+/* =========================
+   URL dan ID olish
+========================= */
+const params = new URLSearchParams(window.location.search);
+const testId = params.get("id");
 
-  // PARAGRAPHS + HIGHLIGHT
-  readingData.passage.trim().split(/\n(?=[A-H]\.)/).forEach(p => {
-    const div = document.createElement("div");
-    div.className = "paragraph";
-    div.textContent = p;
-    div.onclick = () => div.classList.toggle("highlight");
-    passageBox.appendChild(div);
-  });
-
-  // QUESTIONS
-  readingData.questions.forEach(q => {
-    const d = document.createElement("div");
-    d.className = "question";
-
-    if (q.type === "paragraph") {
-      d.innerHTML = `<p>${q.id}. ${q.text}</p>
-      <input data-id="${q.id}" placeholder="A–H">`;
-    }
-
-    if (q.type === "input") {
-      d.innerHTML = `<p>${q.id}. ${q.text}</p>
-      <input data-id="${q.id}">`;
-    }
-
-    if (q.type === "multi") {
-      d.innerHTML = `<p>${q.id}. ${q.text} (Choose ${q.answer.length})</p>`;
-      Object.entries(q.options).forEach(([k,v])=>{
-        d.innerHTML += `
-          <label>
-            <input type="checkbox" name="q${q.id}" value="${k}">
-            ${k}. ${v}
-          </label><br>`;
-      });
-      d.addEventListener("change",()=>limit(q.id,q.answer.length));
-    }
-
-    qBox.appendChild(d);
-  });
-
-  document.getElementById("submitBtn").onclick = submit;
+if (!testId) {
+  app.innerHTML = "<p style='padding:20px'>Test ID topilmadi</p>";
+} else {
+  loadTest(testId);
 }
 
-function limit(id,max){
-  const c=document.querySelectorAll(`input[name="q${id}"]:checked`);
-  if(c.length>max)c[c.length-1].checked=false;
-}
+/* =========================
+   DATA SCRIPT YUKLASH
+========================= */
+function loadTest(id) {
+  const script = document.createElement("script");
+  script.src = `data/${id}.js`;
 
-function startTimer(m){
-  timeLeft=m*60;
-  timer=setInterval(()=>{
-    document.getElementById("timer").innerText =
-      Math.floor(timeLeft/60)+":"+String(timeLeft%60).padStart(2,"0");
-    if(--timeLeft<0){clearInterval(timer);submit();}
-  },1000);
-}
-
-function submit(){
-  clearInterval(timer);
-  let score=0;
-
-  readingData.questions.forEach(q=>{
-    if(q.type!=="multi"){
-      const v=document.querySelector(`[data-id="${q.id}"]`).value.trim().toLowerCase();
-      if(v===q.answer.toLowerCase())score++;
-    }else{
-      const sel=[...document.querySelectorAll(`input[name="q${q.id}"]:checked`)]
-        .map(i=>i.value).sort();
-      if(JSON.stringify(sel)===JSON.stringify([...q.answer].sort()))score++;
+  script.onload = () => {
+    if (!window.readingData) {
+      app.innerHTML = "<p style='padding:20px'>Test data yo‘q</p>";
+      return;
     }
-  });
 
-  const r=JSON.parse(localStorage.getItem("mockResults")||"[]");
-  r.push({
-    test: readingData.title,
-    score,
-    total: readingData.questions.length,
-    date: new Date().toLocaleString()
-  });
-  localStorage.setItem("mockResults",JSON.stringify(r));
+    renderTest(window.readingData);
+    startTimer(window.readingData.timeLimitMinutes || 20);
+  };
 
-  alert(`Score: ${score}/${readingData.questions.length}`);
+  script.onerror = () => {
+    app.innerHTML = "<p style='padding:20px'>Test yuklanmadi</p>";
+  };
+
+  document.body.appendChild(script);
+}
+
+/* =========================
+   TESTNI CHIZISH
+========================= */
+function renderTest(data) {
+  app.innerHTML = `
+    <div class="reading-layout">
+      <section class="passage">
+        <h2>${data.title}</h2>
+        ${data.passage
+          .trim()
+          .split("\n\n")
+          .map(p => `<p>${p.trim()}</p>`)
+          .join("")}
+      </section>
+
+      <section class="questions">
+        ${data.questions.map(renderQuestion).join("")}
+      </section>
+    </div>
+  `;
+}
+
+/* =========================
+   SAVOLLAR
+========================= */
+function renderQuestion(q) {
+  if (q.type === "paragraph") {
+    return `
+      <div class="question">
+        <p><b>${q.id}.</b> ${q.text}</p>
+        <input type="text" placeholder="A–H" />
+      </div>
+    `;
+  }
+
+  if (q.type === "input") {
+    return `
+      <div class="question">
+        <p><b>${q.id}.</b> ${q.text}</p>
+        <input type="text" />
+      </div>
+    `;
+  }
+
+  if (q.type === "multi") {
+    return `
+      <div class="question">
+        <p><b>${q.id}.</b> ${q.text}</p>
+        ${Object.entries(q.options)
+          .map(
+            ([k, v]) =>
+              `<label><input type="checkbox"> ${k}. ${v}</label><br>`
+          )
+          .join("")}
+      </div>
+    `;
+  }
+
+  return "";
+}
+
+/* =========================
+   TIMER
+========================= */
+function startTimer(min) {
+  let sec = min * 60;
+
+  setInterval(() => {
+    const m = Math.floor(sec / 60);
+    const s = sec % 60;
+    timerEl.textContent = `${m}:${s.toString().padStart(2, "0")}`;
+    if (sec > 0) sec--;
+  }, 1000);
 }
