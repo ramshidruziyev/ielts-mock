@@ -1,14 +1,35 @@
+// reading/data/index.js
+// =====================
+// READING TESTS LIST
+// =====================
+
 const readingTests = [
-  { id: "p001", title: "Museum Blockbuster" }
+  {
+    id: "p001",
+    title: "Museum Blockbuster",
+    free: true
+  }
+  // Keyin p002, p003 shu yerga qo‘shiladi
 ];
 
+// =====================
+// RENDER LIST
+// =====================
 const list = document.getElementById("list");
 
-readingTests.forEach(t => {
-  const btn = document.createElement("button");
-  btn.textContent = t.title;
-  btn.onclick = () => {
-    location.href = `reading.html?id=${t.id}`;
+readingTests.forEach(test => {
+  const card = document.createElement("div");
+  card.className = "card";
+
+  card.innerHTML = `
+    <div class="badge">${test.free ? "Free" : "Paid"}</div>
+    <div class="title">${test.title}</div>
+    <button class="start-btn">▶ Start</button>
+  `;
+
+  card.querySelector("button").onclick = () => {
+    window.location.href = `reading.html?id=${test.id}`;
   };
-  list.appendChild(btn);
+
+  list.appendChild(card);
 });
