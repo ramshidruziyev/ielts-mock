@@ -23,7 +23,7 @@ const resetBtn = document.getElementById("resetBtn");
 const submitBtn = document.getElementById("submitBtn");
 
 /* =====================
-   INIT (CALLED FROM HTML)
+   INIT
 ===================== */
 function initReading() {
   if (!window.readingData) {
@@ -32,6 +32,7 @@ function initReading() {
   }
 
   data = window.readingData;
+  timeLeft = data.time * 60;
 
   renderPassage();
   renderQuestions();
@@ -52,9 +53,9 @@ function renderPassage() {
 function renderQuestions() {
   questionsEl.innerHTML = "";
 
-  data.questions.forEach((q, index) => {
+  data.questions.forEach(q => {
     if (q.type === "paragraph" || q.type === "input") {
-      renderSimpleQuestion(q, index);
+      renderSimpleQuestion(q);
     }
 
     if (q.type === "multi-group") {
@@ -63,7 +64,7 @@ function renderQuestions() {
   });
 }
 
-function renderSimpleQuestion(q, index) {
+function renderSimpleQuestion(q) {
   const div = document.createElement("div");
   div.className = "question";
   div.dataset.id = q.id;
@@ -88,6 +89,7 @@ function renderSimpleQuestion(q, index) {
 function renderMultiGroup(group) {
   const wrapper = document.createElement("div");
   wrapper.className = "question-group";
+  wrapper.dataset.limit = group.limit;
 
   wrapper.innerHTML = `<p class="instruction">${group.instruction}</p>`;
 
@@ -116,6 +118,24 @@ function renderMultiGroup(group) {
 }
 
 /* =====================
+   CHECKBOX LIMIT (MUHIM!)
+===================== */
+document.addEventListener("change", e => {
+  if (e.target.type !== "checkbox") return;
+
+  const question = e.target.closest(".question");
+  if (!question) return;
+
+  const limit = Number(question.dataset.limit);
+  if (!limit) return;
+
+  const checked = question.querySelectorAll("input[type=checkbox]:checked");
+  if (checked.length > limit) {
+    e.target.checked = false;
+  }
+});
+
+/* =====================
    SUBMIT & SCORE
 ===================== */
 function submitAnswers() {
@@ -128,6 +148,7 @@ function submitAnswers() {
 
     div.classList.remove("correct", "wrong");
 
+    // TEXT / PARAGRAPH
     if (q.type === "input" || q.type === "paragraph") {
       const user = div.querySelector("input").value.trim().toLowerCase();
       if (user === q.answer.toLowerCase()) {
@@ -138,6 +159,7 @@ function submitAnswers() {
       }
     }
 
+    // MULTI
     if (Array.isArray(q.answer)) {
       const checked = [...div.querySelectorAll("input:checked")].map(i => i.value);
       const limit = Number(div.dataset.limit);
@@ -217,18 +239,24 @@ function updateTimer() {
 }
 
 /* =====================
-   HIGHLIGHT
+   SAFE HIGHLIGHT
 ===================== */
 function enableHighlighting() {
   passageEl.addEventListener("mouseup", () => {
     const sel = window.getSelection();
-    if (!sel.toString()) return;
+    if (!sel || !sel.toString()) return;
 
-    const range = sel.getRangeAt(0);
-    const span = document.createElement("span");
-    span.className = "highlight";
-    range.surroundContents(span);
-    sel.removeAllRanges();
+    try {
+      const range = sel.getRangeAt(0);
+      if (!passageEl.contains(range.commonAncestorContainer)) return;
+
+      const span = document.createElement("span");
+      span.className = "highlight";
+      range.surroundContents(span);
+      sel.removeAllRanges();
+    } catch (e) {
+      sel.removeAllRanges();
+    }
   });
 }
 
@@ -237,3 +265,8 @@ function enableHighlighting() {
 ===================== */
 submitBtn.addEventListener("click", submitAnswers);
 resetBtn.addEventListener("click", resetTest);
+
+/* =====================
+   AUTO INIT
+===================== */
+initReading();
