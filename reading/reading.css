@@ -1,82 +1,119 @@
 * {
   box-sizing: border-box;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Arial, sans-serif;
 }
 
 body {
   margin: 0;
-  background: #f4f6f8;
-  color: #111;
+  background: #f4f6fa;
 }
 
-/* TOP BAR */
-.top-bar {
-  background: #1f5fd6;
+/* HEADER */
+.top-bar,
+.reading-header {
+  background: #1e5bd7;
   color: white;
+  padding: 14px;
+  font-size: 18px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 16px;
-  font-weight: bold;
 }
 
-/* LAYOUT */
+/* TEST LIST */
+.tests-list {
+  padding: 16px;
+}
+
+.test-card {
+  background: white;
+  padding: 16px;
+  border-radius: 14px;
+  margin-bottom: 16px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+  position: relative;
+}
+
+.test-card h3 {
+  margin: 0 0 6px;
+}
+
+.test-card p {
+  margin: 0 0 12px;
+  color: #555;
+}
+
+.badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: #28c76f;
+  color: white;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 20px;
+}
+
+.start-btn {
+  display: inline-block;
+  background: #1e5bd7;
+  color: white;
+  text-decoration: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+}
+
+/* READING LAYOUT */
 .reading-layout {
   display: flex;
   height: calc(100vh - 110px);
 }
 
-/* PASSAGE */
-.passage {
-  width: 50%;
+.passage,
+.questions {
   padding: 16px;
   overflow-y: auto;
-  border-right: 1px solid #ddd;
-  background: #ffffff;
-  line-height: 1.6;
 }
 
-/* QUESTIONS */
+.passage {
+  width: 50%;
+  background: white;
+  border-right: 1px solid #ddd;
+}
+
 .questions {
   width: 50%;
-  padding: 16px;
-  overflow-y: auto;
-  background: #fafafa;
+  background: #f9fafc;
+}
+
+/* SUBMIT */
+.submit-bar {
+  background: white;
+  padding: 12px;
+  text-align: center;
+  border-top: 1px solid #ddd;
+}
+
+#submitBtn {
+  background: #1e5bd7;
+  color: white;
+  border: none;
+  padding: 12px 26px;
+  font-size: 16px;
+  border-radius: 10px;
 }
 
 /* HIGHLIGHT */
 ::selection {
   background: yellow;
-}
-
-/* SUBMIT */
-.submit-bar {
-  padding: 12px;
-  text-align: center;
-  background: #1f5fd6;
-}
-
-.submit-bar button {
-  padding: 12px 28px;
-  font-size: 16px;
-  border: none;
-  border-radius: 6px;
-  background: white;
-  color: #1f5fd6;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.submit-bar button:hover {
-  background: #e6ecff;
+  color: black;
 }
 
 /* MOBILE */
-@media (max-width: 900px) {
+@media (max-width: 768px) {
   .reading-layout {
     flex-direction: column;
   }
-
   .passage,
   .questions {
     width: 100%;
