@@ -4,56 +4,34 @@
   <meta charset="UTF-8" />
   <title>IELTS Reading Test</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- CSS -->
   <link rel="stylesheet" href="reading.css" />
 </head>
 <body>
 
-  <!-- ===== TOP BAR ===== -->
-  <header class="top-bar">
-    <div class="top-left">
-      <span class="book-icon">📘</span>
-      <span class="title">IELTS Reading</span>
-    </div>
-    <div class="top-right">
-      <span id="timer">20:00</span>
-    </div>
-  </header>
+<header class="top-bar">
+  <div class="top-left">📘 IELTS Reading</div>
+  <div id="timer">20:00</div>
+</header>
 
-  <!-- ===== MAIN CONTENT ===== -->
-  <main class="reading-layout">
+<main class="layout">
+  <section id="passage" class="panel">
+    <!-- PASSAGE shu yerga tushadi -->
+  </section>
 
-    <!-- PASSAGE (LEFT) -->
-    <section class="passage-section">
-      <div id="passage" class="passage-box">
-        <!-- passage shu yerga keladi -->
-      </div>
-    </section>
+  <section id="questions" class="panel">
+    <!-- QUESTIONS shu yerga tushadi -->
+  </section>
+</main>
 
-    <!-- QUESTIONS (RIGHT) -->
-    <section class="questions-section">
-      <div id="questions" class="questions-box">
-        <!-- questions shu yerga keladi -->
-      </div>
-    </section>
+<footer class="bottom-bar">
+  <span>Score: <b id="score">0</b></span>
+  <div>
+    <button id="resetBtn">Reset</button>
+    <button id="submitBtn">Submit</button>
+  </div>
+</footer>
 
-  </main>
-
-  <!-- ===== BOTTOM BAR ===== -->
-  <footer class="bottom-bar">
-    <div class="score-box">
-      Score: <span id="score">0</span>
-    </div>
-    <div class="actions">
-      <button id="resetBtn" class="btn secondary">Reset</button>
-      <button id="submitBtn" class="btn primary">Submit</button>
-    </div>
-  </footer>
-
-  <!-- ===== FAQAT BITTA JS ===== -->
-  <!-- MUHIM: p001.js NI O‘ZI YUKLAYDI -->
-  <script src="reading.js"></script>
-
+<!-- FAQAT BITTA JS -->
+<script src="reading.js"></script>
 </body>
 </html>
