@@ -1,9 +1,3 @@
-// reading/data/index.js
-
 window.readingTests = [
-  {
-    id: "p001",
-    number: 1,
-    title: "Museum Blockbuster"
-  }
+  { id: "p001", title: "Museum Blockbuster" }
 ];
