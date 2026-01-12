@@ -1,19 +1,12 @@
 /* =====================================================
-   IELTS READING – TEST INDEX (FINAL)
+   IELTS READING – TESTLAR RO‘YXATI
    Bu fayl reading/index.html tomonidan o‘qiladi
-   Faqat SHU YERGA test qo‘shib boriladi
 ===================================================== */
 
 /*
-  FORMAT:
-  {
-    id: "p001",
-    title: "Museum Blockbuster"
-  }
-
   QOIDALAR:
-  - id → data ichidagi fayl nomi (p001.js, p002.js, ...)
-  - title → foydalanuvchiga ko‘rinadigan nom
+  - id → p001, p002, p003 ...
+  - title → passage nomi
 */
 
 const readingTests = [
@@ -22,10 +15,7 @@ const readingTests = [
     title: "Museum Blockbuster"
   }
 
-  // =============================
-  // YANGI TEST QO‘SHISH MISOLI
-  // =============================
-  // ,
+  // 🔽 KEYIN QO‘SHISH OSON
   // {
   //   id: "p002",
   //   title: "Sleeping on the Job"
@@ -42,6 +32,7 @@ if (!list) {
   console.error("❌ #list elementi topilmadi (reading/index.html)");
 }
 
+/* TEST KARTALARI */
 readingTests.forEach(test => {
   const card = document.createElement("div");
   card.className = "test-card";
@@ -49,12 +40,15 @@ readingTests.forEach(test => {
   card.innerHTML = `
     <div class="badge">Free</div>
     <div class="test-title">${test.title}</div>
-    <button class="start-btn">▶ Start</button>
+    <button class="start-btn">
+      ▶ Start
+    </button>
   `;
 
-  card.querySelector(".start-btn").onclick = () => {
+  card.querySelector(".start-btn").addEventListener("click", () => {
+    // MUHIM: to‘g‘ri yo‘l
     window.location.href = `reading.html?id=${test.id}`;
-  };
+  });
 
   list.appendChild(card);
 });
