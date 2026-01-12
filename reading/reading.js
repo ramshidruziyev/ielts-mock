@@ -1,67 +1,76 @@
+// reading.js
+
 const params = new URLSearchParams(location.search);
 const testId = params.get("id");
 
 if (!testId) {
-  alert("Test ID topilmadi");
-  throw new Error("NO TEST ID");
+  alert("Test ID yo‘q");
+  throw new Error("Missing test id");
 }
 
-/* ===== LOAD DATA ===== */
+/* =============================
+   DYNAMIC DATA LOADER (YAKKA)
+============================= */
 const script = document.createElement("script");
 script.src = `data/${testId}.js`;
+script.defer = true;
 
 script.onload = () => {
   if (!window.readingData) {
     alert("Reading data yuklanmadi!");
     return;
   }
-  initReading(window.readingData);
+  init(window.readingData);
 };
 
 script.onerror = () => {
-  alert("Test file topilmadi: " + testId);
+  alert("Test topilmadi: " + testId);
 };
 
-document.body.appendChild(script);
+document.head.appendChild(script);
 
-/* ===== INIT ===== */
-function initReading(data) {
-  document.getElementById("passage").innerHTML = data.passage;
+/* =============================
+   INIT
+============================= */
+function init(data) {
+  renderPassage(data.passage);
   renderQuestions(data.questions);
   startTimer(data.time || 20);
 }
 
-/* ===== QUESTIONS ===== */
-function renderQuestions(questions) {
+/* =============================
+   PASSAGE
+============================= */
+function renderPassage(html) {
+  document.getElementById("passage").innerHTML = html;
+}
+
+/* =============================
+   QUESTIONS
+============================= */
+function renderQuestions(list) {
   const box = document.getElementById("questions");
   box.innerHTML = "";
 
-  questions.forEach(q => {
+  list.forEach(q => {
     const div = document.createElement("div");
-    div.className = "question-box";
+    div.className = "q";
 
-    if (q.type === "paragraph") {
+    if (q.type === "paragraph" || q.type === "input") {
       div.innerHTML = `
-        <p>${q.id}. Which paragraph?</p>
-        <input type="text" data-answer="${q.answer}">
-      `;
-    }
-
-    if (q.type === "input") {
-      div.innerHTML = `
-        <p>${q.id}. Complete the sentence</p>
+        <p>${q.id}.</p>
         <input type="text" data-answer="${q.answer}">
       `;
     }
 
     if (q.type === "multi") {
-      div.innerHTML = `<p>${q.id}. Choose ${q.limit}</p>`;
+      div.innerHTML = `<p>${q.id}.</p>`;
       Object.entries(q.options || {}).forEach(([k, v]) => {
         div.innerHTML += `
           <label>
             <input type="checkbox" name="q${q.id}" value="${k}" data-limit="${q.limit}">
             ${k}. ${v}
-          </label><br>
+          </label>
         `;
       });
     }
@@ -69,30 +78,34 @@ function renderQuestions(questions) {
     box.appendChild(div);
   });
 
-  applyCheckboxLimit();
+  applyLimits();
 }
 
-/* ===== CHECKBOX LIMIT ===== */
-function applyCheckboxLimit() {
+/* =============================
+   CHECKBOX LIMIT
+============================= */
+function applyLimits() {
   document.querySelectorAll("input[type=checkbox]").forEach(cb => {
-    cb.addEventListener("change", () => {
+    cb.onchange = () => {
       const name = cb.name;
       const limit = +cb.dataset.limit;
       const checked = document.querySelectorAll(`input[name="${name}"]:checked`);
       if (checked.length > limit) cb.checked = false;
-    });
+    };
   });
 }
 
-/* ===== TIMER ===== */
+/* =============================
+   TIMER
+============================= */
 function startTimer(min) {
-  let sec = min * 60;
+  let t = min * 60;
   const el = document.getElementById("timer");
 
   setInterval(() => {
-    el.textContent =
-      String(Math.floor(sec / 60)).padStart(2, "0") + ":" +
-      String(sec % 60).padStart(2, "0");
-    if (sec > 0) sec--;
+    const m = String(Math.floor(t / 60)).padStart(2, "0");
+    const s = String(t % 60).padStart(2, "0");
+    el.textContent = `${m}:${s}`;
+    if (t > 0) t--;
   }, 1000);
 }
