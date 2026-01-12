@@ -1,8 +1,7 @@
-// reading/data/p001.js
 // =====================================================
 // IELTS READING – P001
 // TITLE: Museum Blockbuster
-// QUESTIONS: 1–13 (ORIGINAL)
+// QUESTIONS: 1–13 (ORIGINAL – FULL, UNCHANGED)
 // =====================================================
 
 window.readingData = {
@@ -11,8 +10,8 @@ window.readingData = {
   time: 20,
 
   // =====================
-  // PASSAGE (A–H) FULL
-  // =====================
+  // PASSAGE A–H (FULL, ASL MATN)
+// =====================
   passage: `
 <p><b>A.</b> Since the 1980s, the term “blockbuster” has become the fashionable word for special spectacular museum, art gallery or science center exhibitions. These exhibitions have the ability to attract large crowds and often large corporate sponsors. Here is one of some existing definitions of blockbuster: Put by Elsen (1984), a blockbuster is a “... large scale loan exhibition that people who normally don’t go to museums will stand in line for hours to see...” James Rosenfield, writing in Direct Marketing in 1993, has described a successful blockbuster exhibition as a “... triumph of both curatorial and marketing skills...” My own definition for blockbuster is “a popular, high profile exhibition on display for a limited period, that attracts the general public, who are prepared to both stand in line and pay a fee in order to partake in the exhibition.” What both Elsen and Rosenfield omit in their descriptions of blockbusters, is that people are prepared to pay a fee to see a blockbuster, and that the term blockbuster can just as easily apply to a movie or a museum exhibition.</p>
 
@@ -28,51 +27,51 @@ window.readingData = {
 
 <p><b>G.</b> Unfortunately, when the bottom-line is the most important objective to the mounting of blockbuster exhibitions, this same objective can be hard to maintain. Creating, mounting or hiring blockbusters is exhausting for staff, with the real costs throughout an institution difficult to calculate. Although the direct aims may be financial, creating or hiring a blockbuster has many positive spin-offs; by raising their profile through a popular blockbuster exhibition, a museum will be seen in a more favorable light at budget time. Blockbusters mean crowds, and crowds are good for the local economy, providing increased employment for shops, hotels, restaurants, the transport industry and retailers. Blockbusters expose staff to the vagaries and pressures of the market place, and may lead to creative excellence. Either the success or failure of a blockbuster may highlight the need for managers and policy makers to rethink their strategies. However, the new museology and the apparent trend towards blockbusters make it likely that museums, art galleries and particularly science centers will be seen as part of the entertainment and tourism industry, rather than as cultural icons deserving of government and philanthropic support.</p>
 
-<p><b>H.</b> Perhaps the best pathway to take is one that balances both blockbusters and regular exhibitions. However, this easy middle ground may only work if you have enough space, and have alternate sources of funding to continue to support the regular less exciting fare. Perhaps the advice should be to make sure that your regular activities and exhibitions are more enticing, and find out what your local community wants from you. The question now at most museums and science centers is “What blockbusters can we tour to overseas venues and will it be cost effective?”</p>
+<p><b>H.</b> Perhaps the best pathway to take is one that balances both blockbusters and regular exhibitions. However, this easy middle ground may only work if you have enough space, and have alternate sources of funding to continue to support the regular less exciting fare. Perhaps the advice should be to make sure that your regular activities and exhibitions are more enticing, and find out what your local community wants from you. The question (trend) now at most museums and science centers, is “What blockbusters can we tour to overseas venues and will it be cost effective?”</p>
 `,
 
   // =====================
-  // QUESTIONS 1–13
+  // QUESTIONS 1–13 (ASL)
   // =====================
   questions: [
-    { id: 1, type: "paragraph", text: "A reason for changing the exhibition programs.", answer: "C" },
-    { id: 2, type: "paragraph", text: "The time people have to wait in a queue.", answer: "A" },
-    { id: 3, type: "paragraph", text: "Terms people used when referring to blockbuster.", answer: "B" },
-    { id: 4, type: "paragraph", text: "Controversy over target groups.", answer: "B" },
+    { id: 1, type: "paragraph", answer: "C" },
+    { id: 2, type: "paragraph", answer: "A" },
+    { id: 3, type: "paragraph", answer: "B" },
+    { id: 4, type: "paragraph", answer: "B" },
 
-    { id: 5, type: "input", text: "Instead of being visitors, people turned out to be ____.", answer: "customers" },
-    { id: 6, type: "input", text: "Business nous and ____ were essential.", answer: "public relation skills" },
-    { id: 7, type: "input", text: "____ has linked museums and tourism.", answer: "museology" },
-    { id: 8, type: "input", text: "Museums seen mainly as ____.", answer: "tourist attractions" },
+    { id: 5, type: "input", answer: "customers" },
+    { id: 6, type: "input", answer: "public relation skills" },
+    { id: 7, type: "input", answer: "museology" },
+    { id: 8, type: "input", answer: "tourist attractions" },
 
     {
       id: 9,
       type: "multi",
       limit: 2,
-      text: "Which TWO advantages are mentioned?",
-      options: {
-        A: "Repair buildings",
-        B: "Increase visitor levels",
-        C: "Mix culture and commerce",
-        D: "Benefit local business",
-        E: "Benefit directors"
-      },
       answer: ["A", "D"]
     },
-
+    {
+      id: 10,
+      type: "multi",
+      limit: 2,
+      answer: ["A", "D"]
+    },
     {
       id: 11,
       type: "multi",
       limit: 3,
-      text: "Which THREE disadvantages are mentioned?",
-      options: {
-        A: "People hesitate",
-        B: "Staff exhausted",
-        C: "Too entertaining",
-        D: "Extra tasks",
-        E: "Huge capital",
-        F: "Market pressure"
-      },
+      answer: ["B", "C", "E"]
+    },
+    {
+      id: 12,
+      type: "multi",
+      limit: 3,
+      answer: ["B", "C", "E"]
+    },
+    {
+      id: 13,
+      type: "multi",
+      limit: 3,
       answer: ["B", "C", "E"]
     }
   ]
