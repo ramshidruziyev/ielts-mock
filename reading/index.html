@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>IELTS Reading Tests</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="reading.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="reading.css">
 </head>
 <body>
 
@@ -16,27 +16,30 @@
     <p>Loading tests...</p>
   </main>
 
-  <!-- DATA -->
-  <script src="data/index.js"></script>
+  <!-- DATA FILE -->
+  <script src="./data/index.js"></script>
 
-  <!-- RENDER -->
+  <!-- RENDER LOGIC -->
   <script>
     const container = document.getElementById("tests");
 
-    if (!window.readingTests || window.readingTests.length === 0) {
+    // DEBUG (ixtiyoriy, lekin foydali)
+    console.log("readingTests:", window.readingTests);
+
+    if (!Array.isArray(window.readingTests)) {
       container.innerHTML = "<p>No reading tests found.</p>";
     } else {
       container.innerHTML = "";
       window.readingTests.forEach(test => {
-        const div = document.createElement("div");
-        div.className = "test-card";
-        div.innerHTML = `
+        const card = document.createElement("div");
+        card.className = "test-card";
+        card.innerHTML = `
           <h3>Passage ${test.number}: ${test.title}</h3>
           <a class="start-btn" href="reading.html?id=${test.id}">
             Start
           </a>
         `;
-        container.appendChild(div);
+        container.appendChild(card);
       });
     }
   </script>
