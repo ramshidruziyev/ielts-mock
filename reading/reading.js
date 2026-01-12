@@ -1,45 +1,30 @@
-// ===============================
-// IELTS Reading Main JS
-// ===============================
-
+// ===== GET TEST ID =====
 const params = new URLSearchParams(window.location.search);
-const testId = params.get("id");
+const testId = params.get("id") || "p001";
 
-if (!testId) {
-  alert("Test ID yo‘q");
-  throw new Error("No test id");
-}
-
-// ===== Dynamic data loader =====
-const script = document.createElement("script");
-script.src = `data/${testId}.js`;
-
-script.onload = () => {
+// ===== LOAD DATA FILE =====
+const dataScript = document.createElement("script");
+dataScript.src = `data/${testId}.js`;
+dataScript.onload = () => {
   if (!window.readingData) {
     alert("Reading data yuklanmadi!");
     return;
   }
   initReading(window.readingData);
 };
-
-script.onerror = () => {
-  alert("Test topilmadi: " + testId);
+dataScript.onerror = () => {
+  alert("Test file topilmadi: " + testId);
 };
+document.body.appendChild(dataScript);
 
-document.body.appendChild(script);
-
-// ===============================
-// INIT
-// ===============================
+// ===== INIT =====
 function initReading(data) {
   document.getElementById("passage").innerHTML = data.passage;
   renderQuestions(data.questions);
   startTimer(data.time || 20);
 }
 
-// ===============================
-// QUESTIONS
-// ===============================
+// ===== QUESTIONS =====
 function renderQuestions(questions) {
   const box = document.getElementById("questions");
   box.innerHTML = "";
@@ -48,28 +33,19 @@ function renderQuestions(questions) {
     const div = document.createElement("div");
     div.className = "question-box";
 
-    if (q.type === "paragraph") {
-      div.innerHTML = `
-        <p>${q.id}. Which paragraph?</p>
-        <input type="text" data-answer="${q.answer}">
-      `;
-    }
+    div.innerHTML = `<h4>${q.id}.</h4>`;
 
-    if (q.type === "input") {
-      div.innerHTML = `
-        <p>${q.id}. Complete:</p>
-        <input type="text" data-answer="${q.answer}">
-      `;
+    if (q.type === "paragraph" || q.type === "input") {
+      div.innerHTML += `<input type="text" data-answer="${q.answer}" />`;
     }
 
     if (q.type === "multi") {
-      div.innerHTML = `<p>${q.id}. Choose ${q.limit}</p>`;
       Object.entries(q.options || {}).forEach(([k, v]) => {
         div.innerHTML += `
           <label>
             <input type="checkbox" name="q${q.id}" value="${k}" data-limit="${q.limit}">
             ${k}. ${v}
-          </label><br>
+          </label>
         `;
       });
     }
@@ -80,23 +56,19 @@ function renderQuestions(questions) {
   applyCheckboxLimits();
 }
 
-// ===============================
-// CHECKBOX LIMIT
-// ===============================
+// ===== CHECKBOX LIMIT =====
 function applyCheckboxLimits() {
   document.querySelectorAll("input[type=checkbox]").forEach(cb => {
     cb.addEventListener("change", () => {
       const name = cb.name;
-      const limit = parseInt(cb.dataset.limit);
+      const limit = +cb.dataset.limit;
       const checked = document.querySelectorAll(`input[name="${name}"]:checked`);
       if (checked.length > limit) cb.checked = false;
     });
   });
 }
 
-// ===============================
-// TIMER
-// ===============================
+// ===== TIMER =====
 function startTimer(min) {
   let sec = min * 60;
   const el = document.getElementById("timer");
