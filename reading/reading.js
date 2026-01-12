@@ -1,43 +1,55 @@
-// URL dan id olish
-const params = new URLSearchParams(window.location.search);
-const testId = params.get("id");
+// ===============================
+// IELTS Reading Loader
+// ===============================
 
-// Dynamic script loader
-const script = document.createElement("script");
-script.src = `data/${testId}.js`;
-script.onload = initTest;
-document.body.appendChild(script);
+document.addEventListener("DOMContentLoaded", () => {
+  const params = new URLSearchParams(window.location.search);
+  const testId = params.get("id");
 
-function initTest() {
-  if (!window.readingData) {
-    alert("Reading data not found");
+  if (!testId) {
+    alert("Test ID yo‘q");
     return;
   }
 
-  // Title
-  document.getElementById("test-title").innerText = readingData.title;
+  const script = document.createElement("script");
+  script.src = `/ielts-mock/reading/data/${testId}.js`;
 
-  // 🔥 ENG MUHIM QATORLAR
-  document.getElementById("passage").innerHTML = readingData.passage;
-  document.getElementById("questions").innerHTML = readingData.questions;
+  script.onload = () => {
+    if (!window.readingData) {
+      alert("readingData topilmadi");
+      return;
+    }
 
-  startTimer(20);
-}
+    document.getElementById("test-title").innerText =
+      window.readingData.title;
 
+    document.getElementById("passage").innerHTML =
+      window.readingData.passage;
+
+    document.getElementById("questions").innerHTML =
+      window.readingData.questions;
+
+    startTimer(20);
+  };
+
+  script.onerror = () => {
+    alert("p001.js yuklanmadi");
+  };
+
+  document.body.appendChild(script);
+});
+
+// ===============================
 // TIMER
+// ===============================
 function startTimer(minutes) {
   let time = minutes * 60;
   const timerEl = document.getElementById("timer");
 
-  const interval = setInterval(() => {
+  setInterval(() => {
     const m = Math.floor(time / 60);
     const s = time % 60;
-    timerEl.textContent = `${m}:${s < 10 ? "0" : ""}${s}`;
+    timerEl.innerText = `${m}:${s < 10 ? "0" : ""}${s}`;
     time--;
-
-    if (time < 0) {
-      clearInterval(interval);
-      alert("Time is up!");
-    }
   }, 1000);
 }
