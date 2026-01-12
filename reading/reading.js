@@ -1,82 +1,238 @@
-// ===== GET TEST ID =====
+/* =====================================================
+   IELTS READING – MAIN LOGIC
+   Ishlaydi: GitHub Pages
+===================================================== */
+
+/* =====================
+   GLOBAL STATE
+===================== */
+let testData = null;
+let score = 0;
+let timerSeconds = 20 * 60;
+let timerInterval = null;
+
+/* =====================
+   ELEMENTS
+===================== */
+const passageEl = document.getElementById("passage");
+const questionsEl = document.getElementById("questions");
+const scoreEl = document.getElementById("score");
+const timerEl = document.getElementById("timer");
+
+const resetBtn = document.getElementById("resetBtn");
+const submitBtn = document.getElementById("submitBtn");
+
+/* =====================
+   GET TEST ID
+===================== */
 const params = new URLSearchParams(window.location.search);
 const testId = params.get("id") || "p001";
 
-// ===== LOAD DATA FILE =====
-const dataScript = document.createElement("script");
-dataScript.src = `data/${testId}.js`;
-dataScript.onload = () => {
-  if (!window.readingData) {
-    alert("Reading data yuklanmadi!");
-    return;
-  }
-  initReading(window.readingData);
-};
-dataScript.onerror = () => {
-  alert("Test file topilmadi: " + testId);
-};
-document.body.appendChild(dataScript);
+/* =====================
+   LOAD TEST DATA
+===================== */
+function loadTestData() {
+  const script = document.createElement("script");
+  script.src = `data/${testId}.js`;
 
-// ===== INIT =====
-function initReading(data) {
-  document.getElementById("passage").innerHTML = data.passage;
-  renderQuestions(data.questions);
-  startTimer(data.time || 20);
-}
-
-// ===== QUESTIONS =====
-function renderQuestions(questions) {
-  const box = document.getElementById("questions");
-  box.innerHTML = "";
-
-  questions.forEach(q => {
-    const div = document.createElement("div");
-    div.className = "question-box";
-
-    div.innerHTML = `<h4>${q.id}.</h4>`;
-
-    if (q.type === "paragraph" || q.type === "input") {
-      div.innerHTML += `<input type="text" data-answer="${q.answer}" />`;
+  script.onload = () => {
+    if (!window.READING_TEST) {
+      alert("Reading data yuklanmadi!");
+      return;
     }
 
-    if (q.type === "multi") {
-      Object.entries(q.options || {}).forEach(([k, v]) => {
-        div.innerHTML += `
+    testData = window.READING_TEST;
+    renderPassage();
+    renderQuestions();
+    startTimer();
+  };
+
+  script.onerror = () => {
+    alert("Reading data yuklanmadi!");
+  };
+
+  document.body.appendChild(script);
+}
+
+/* =====================
+   RENDER PASSAGE
+===================== */
+function renderPassage() {
+  passageEl.innerHTML = "";
+
+  testData.passage.forEach(text => {
+    const p = document.createElement("p");
+    p.textContent = text;
+    passageEl.appendChild(p);
+  });
+
+  enableHighlighting();
+}
+
+/* =====================
+   RENDER QUESTIONS
+===================== */
+function renderQuestions() {
+  questionsEl.innerHTML = "";
+
+  testData.questions.forEach((q, index) => {
+    const div = document.createElement("div");
+    div.className = "question";
+    div.dataset.index = index;
+
+    let html = `<p><b>${index + 1}.</b> ${q.question}</p>`;
+
+    if (q.type === "text") {
+      html += `<input type="text" />`;
+    }
+
+    if (q.type === "boolean") {
+      q.options.forEach(opt => {
+        html += `
           <label>
-            <input type="checkbox" name="q${q.id}" value="${k}" data-limit="${q.limit}">
-            ${k}. ${v}
+            <input type="radio" name="q${index}" value="${opt}">
+            ${opt}
           </label>
         `;
       });
     }
 
-    box.appendChild(div);
-  });
+    if (q.type === "multiple") {
+      q.options.forEach(opt => {
+        html += `
+          <label>
+            <input type="checkbox" value="${opt}">
+            ${opt}
+          </label>
+        `;
+      });
+    }
 
-  applyCheckboxLimits();
+    div.innerHTML = html;
+    questionsEl.appendChild(div);
+  });
 }
 
-// ===== CHECKBOX LIMIT =====
-function applyCheckboxLimits() {
-  document.querySelectorAll("input[type=checkbox]").forEach(cb => {
-    cb.addEventListener("change", () => {
-      const name = cb.name;
-      const limit = +cb.dataset.limit;
-      const checked = document.querySelectorAll(`input[name="${name}"]:checked`);
-      if (checked.length > limit) cb.checked = false;
+/* =====================
+   SUBMIT & CHECK
+===================== */
+function submitAnswers() {
+  score = 0;
+
+  const questionDivs = document.querySelectorAll(".question");
+
+  questionDivs.forEach((div, i) => {
+    const q = testData.questions[i];
+    div.classList.remove("correct", "wrong");
+
+    let userAnswer = null;
+
+    if (q.type === "text") {
+      userAnswer = div.querySelector("input").value.trim().toLowerCase();
+      if (userAnswer === q.answer.toLowerCase()) {
+        score++;
+        div.classList.add("correct");
+      } else {
+        div.classList.add("wrong");
+      }
+    }
+
+    if (q.type === "boolean") {
+      const checked = div.querySelector("input:checked");
+      if (checked && checked.value === q.answer) {
+        score++;
+        div.classList.add("correct");
+      } else {
+        div.classList.add("wrong");
+      }
+    }
+
+    if (q.type === "multiple") {
+      const checked = [...div.querySelectorAll("input:checked")].map(
+        c => c.value
+      );
+
+      if (
+        checked.length === q.answer.length &&
+        checked.every(v => q.answer.includes(v))
+      ) {
+        score++;
+        div.classList.add("correct");
+      } else {
+        div.classList.add("wrong");
+      }
+    }
+  });
+
+  scoreEl.textContent = score;
+}
+
+/* =====================
+   RESET
+===================== */
+function resetTest() {
+  score = 0;
+  scoreEl.textContent = 0;
+  clearInterval(timerInterval);
+  timerSeconds = 20 * 60;
+
+  document.querySelectorAll(".question").forEach(q => {
+    q.classList.remove("correct", "wrong");
+    q.querySelectorAll("input").forEach(i => {
+      i.checked = false;
+      i.value = "";
     });
   });
+
+  startTimer();
 }
 
-// ===== TIMER =====
-function startTimer(min) {
-  let sec = min * 60;
-  const el = document.getElementById("timer");
+/* =====================
+   TIMER
+===================== */
+function startTimer() {
+  updateTimer();
 
-  setInterval(() => {
-    const m = String(Math.floor(sec / 60)).padStart(2, "0");
-    const s = String(sec % 60).padStart(2, "0");
-    el.textContent = `${m}:${s}`;
-    if (sec > 0) sec--;
+  timerInterval = setInterval(() => {
+    timerSeconds--;
+    updateTimer();
+
+    if (timerSeconds <= 0) {
+      clearInterval(timerInterval);
+      submitAnswers();
+      alert("Time is up!");
+    }
   }, 1000);
 }
+
+function updateTimer() {
+  const min = String(Math.floor(timerSeconds / 60)).padStart(2, "0");
+  const sec = String(timerSeconds % 60).padStart(2, "0");
+  timerEl.textContent = `${min}:${sec}`;
+}
+
+/* =====================
+   TEXT HIGHLIGHT
+===================== */
+function enableHighlighting() {
+  passageEl.addEventListener("mouseup", () => {
+    const selection = window.getSelection();
+    if (!selection.toString()) return;
+
+    const span = document.createElement("span");
+    span.className = "highlight";
+    selection.getRangeAt(0).surroundContents(span);
+    selection.removeAllRanges();
+  });
+}
+
+/* =====================
+   EVENTS
+===================== */
+submitBtn.addEventListener("click", submitAnswers);
+resetBtn.addEventListener("click", resetTest);
+
+/* =====================
+   INIT
+===================== */
+loadTestData();
