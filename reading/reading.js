@@ -1,154 +1,198 @@
-/* =====================================================
-   IELTS READING ENGINE
-   reading.js
-   ===================================================== */
-
-// ------------------ GLOBAL ------------------
-let readingData = null;
+/***********************
+ * GLOBAL VARIABLES
+ ***********************/
 let timeLeft = 20 * 60; // 20:00
 let timerInterval = null;
+let score = 0;
 
-// ------------------ ON LOAD ------------------
-document.addEventListener("DOMContentLoaded", () => {
-  loadTestData();
-  startTimer();
-  enableHighlight();
-  document.getElementById("submitBtn").addEventListener("click", submitAnswers);
-});
-
-// ------------------ LOAD TEST ------------------
-function loadTestData() {
-  const params = new URLSearchParams(window.location.search);
-  const testId = params.get("id") || "p001";
-
-  const script = document.createElement("script");
-  script.src = `data/${testId}.js`;
-  script.onload = () => {
-    if (!window.readingData) {
-      alert("Reading data not found!");
-      return;
-    }
-    readingData = window.readingData;
-    renderReading();
-  };
-  script.onerror = () => {
-    alert("Failed to load test data.");
-  };
-
-  document.body.appendChild(script);
-}
-
-// ------------------ RENDER ------------------
-function renderReading() {
-  document.getElementById("passage").innerHTML = readingData.passage;
-  document.getElementById("questions").innerHTML = readingData.questions;
-
-  setupCheckboxLimits();
-}
-
-// ------------------ TIMER ------------------
+/***********************
+ * TIMER
+ ***********************/
 function startTimer() {
   const timerEl = document.getElementById("timer");
 
   timerInterval = setInterval(() => {
-    const min = String(Math.floor(timeLeft / 60)).padStart(2, "0");
-    const sec = String(timeLeft % 60).padStart(2, "0");
-    timerEl.textContent = `${min}:${sec}`;
+    const minutes = String(Math.floor(timeLeft / 60)).padStart(2, "0");
+    const seconds = String(timeLeft % 60).padStart(2, "0");
+    timerEl.textContent = `${minutes}:${seconds}`;
 
     if (timeLeft <= 0) {
       clearInterval(timerInterval);
       submitAnswers();
     }
-
     timeLeft--;
   }, 1000);
 }
 
-// ------------------ HIGHLIGHT ------------------
-function enableHighlight() {
-  document.addEventListener("mouseup", () => {
-    const selection = window.getSelection();
-    if (!selection.rangeCount) return;
+/***********************
+ * RENDER PASSAGE
+ ***********************/
+function renderPassage(text) {
+  const passageEl = document.getElementById("passage");
+  passageEl.innerHTML = "";
 
-    const range = selection.getRangeAt(0);
-    if (range.collapsed) return;
-
-    const span = document.createElement("span");
-    span.className = "highlight";
-    range.surroundContents(span);
-    selection.removeAllRanges();
+  text.forEach(p => {
+    const para = document.createElement("p");
+    para.textContent = p;
+    passageEl.appendChild(para);
   });
 }
 
-// ------------------ CHECKBOX LIMIT ------------------
-function setupCheckboxLimits() {
-  document.querySelectorAll("[data-max]").forEach(group => {
-    const max = parseInt(group.dataset.max, 10);
-    const checkboxes = group.querySelectorAll("input[type='checkbox']");
+/***********************
+ * HIGHLIGHT (TEXT SELECTION)
+ ***********************/
+document.addEventListener("mouseup", () => {
+  const selection = window.getSelection();
+  if (!selection || selection.toString().trim() === "") return;
 
-    checkboxes.forEach(cb => {
-      cb.addEventListener("change", () => {
-        const checked = [...checkboxes].filter(c => c.checked);
-        if (checked.length > max) {
-          cb.checked = false;
+  const range = selection.getRangeAt(0);
+  const span = document.createElement("span");
+  span.className = "highlight";
+  range.surroundContents(span);
+  selection.removeAllRanges();
+});
+
+/***********************
+ * RENDER QUESTIONS
+ ***********************/
+function renderQuestions(questions) {
+  const container = document.getElementById("questions");
+  container.innerHTML = "";
+
+  questions.forEach((q, index) => {
+    const qBox = document.createElement("div");
+    qBox.className = "question-box";
+
+    const title = document.createElement("h4");
+    title.textContent = `${index + 1}. ${q.question}`;
+    qBox.appendChild(title);
+
+    // TRUE / FALSE / NOT GIVEN
+    if (q.type === "single") {
+      q.options.forEach(opt => {
+        const label = document.createElement("label");
+        label.innerHTML = `
+          <input type="radio" name="q${index}" value="${opt}">
+          ${opt}
+        `;
+        qBox.appendChild(label);
+      });
+    }
+
+    // CHECKBOX WITH LIMIT
+    if (q.type === "multiple") {
+      q.options.forEach(opt => {
+        const label = document.createElement("label");
+        label.innerHTML = `
+          <input type="checkbox" name="q${index}" value="${opt}">
+          ${opt}
+        `;
+        qBox.appendChild(label);
+      });
+
+      qBox.addEventListener("change", () => {
+        const checked = qBox.querySelectorAll("input[type=checkbox]:checked");
+        if (checked.length > q.limit) {
+          checked[checked.length - 1].checked = false;
         }
       });
-    });
+    }
+
+    // INPUT (ONE WORD ONLY)
+    if (q.type === "input") {
+      const input = document.createElement("input");
+      input.type = "text";
+      input.placeholder = "Write ONE WORD ONLY";
+      input.dataset.index = index;
+      qBox.appendChild(input);
+    }
+
+    container.appendChild(qBox);
   });
 }
 
-// ------------------ SUBMIT ------------------
+/***********************
+ * SUBMIT & CHECK ANSWERS
+ ***********************/
 function submitAnswers() {
   clearInterval(timerInterval);
+  score = 0;
 
-  let score = 0;
-  let total = readingData.answers ? Object.keys(readingData.answers).length : 0;
+  testData.questions.forEach((q, index) => {
+    const qBox = document.querySelectorAll(".question-box")[index];
 
-  if (!readingData.answers) {
-    showResult("Test submitted (answers not configured).");
+    // SINGLE
+    if (q.type === "single") {
+      const selected = qBox.querySelector("input:checked");
+      if (selected && selected.value === q.answer) {
+        score++;
+        qBox.classList.add("correct");
+      } else {
+        qBox.classList.add("wrong");
+      }
+    }
+
+    // MULTIPLE
+    if (q.type === "multiple") {
+      const selected = Array.from(
+        qBox.querySelectorAll("input:checked")
+      ).map(i => i.value);
+
+      const correct =
+        selected.length === q.answer.length &&
+        selected.every(v => q.answer.includes(v));
+
+      if (correct) {
+        score++;
+        qBox.classList.add("correct");
+      } else {
+        qBox.classList.add("wrong");
+      }
+    }
+
+    // INPUT
+    if (q.type === "input") {
+      const input = qBox.querySelector("input");
+      if (
+        input.value.trim().toLowerCase() ===
+        q.answer.trim().toLowerCase()
+      ) {
+        score++;
+        qBox.classList.add("correct");
+      } else {
+        qBox.classList.add("wrong");
+      }
+    }
+  });
+
+  document.getElementById("score").textContent = score;
+}
+
+/***********************
+ * RESET
+ ***********************/
+function resetTest() {
+  location.reload();
+}
+
+/***********************
+ * INIT (DATA LOADED)
+ ***********************/
+window.addEventListener("load", () => {
+  if (!window.testData) {
+    alert("Test data not found!");
     return;
   }
 
-  // TEXT INPUTS
-  document.querySelectorAll("input[type='text']").forEach((input, i) => {
-    const correct = readingData.answers[`q${i + 1}`];
-    if (!correct) return;
+  renderPassage(testData.passage);
+  renderQuestions(testData.questions);
+  startTimer();
 
-    if (input.value.trim().toLowerCase() === correct.toLowerCase()) {
-      input.classList.add("correct");
-      score++;
-    } else {
-      input.classList.add("wrong");
-    }
-  });
+  document
+    .getElementById("submitBtn")
+    .addEventListener("click", submitAnswers);
 
-  // CHECKBOXES
-  document.querySelectorAll("[data-q]").forEach(group => {
-    const qid = group.dataset.q;
-    const correct = readingData.answers[qid];
-    if (!Array.isArray(correct)) return;
-
-    const chosen = [...group.querySelectorAll("input:checked")].map(
-      i => i.value
-    );
-
-    if (
-      chosen.length === correct.length &&
-      chosen.every(v => correct.includes(v))
-    ) {
-      score++;
-      group.classList.add("correct");
-    } else {
-      group.classList.add("wrong");
-    }
-  });
-
-  showResult(`Score: ${score} / ${total}`);
-}
-
-// ------------------ RESULT ------------------
-function showResult(text) {
-  const box = document.getElementById("result");
-  box.textContent = text;
-  box.style.display = "block";
-}
+  document
+    .getElementById("resetBtn")
+    .addEventListener("click", resetTest);
+});
