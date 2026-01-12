@@ -1,198 +1,186 @@
-/***********************
- * GLOBAL VARIABLES
- ***********************/
-let timeLeft = 20 * 60; // 20:00
-let timerInterval = null;
+// =====================================================
+// IELTS READING – MAIN LOGIC (GitHub Pages compatible)
+// =====================================================
+
+// ---------- GET TEST ID ----------
+const params = new URLSearchParams(window.location.search);
+const testId = params.get("id");
+
+if (!testId) {
+  alert("Reading test ID topilmadi");
+  throw new Error("No test id");
+}
+
+// ---------- LOAD DATA FILE (p001.js, p002.js ...) ----------
+const dataScript = document.createElement("script");
+dataScript.src = `data/${testId}.js`;
+dataScript.onload = () => {
+  if (!window.readingData) {
+    alert("Reading data yuklanmadi");
+    return;
+  }
+  initReading(window.readingData);
+};
+document.body.appendChild(dataScript);
+
+// =====================================================
+// INIT READING
+// =====================================================
 let score = 0;
+let timerInterval;
+let timeLeft = 0;
 
-/***********************
- * TIMER
- ***********************/
-function startTimer() {
-  const timerEl = document.getElementById("timer");
+function initReading(data) {
+  document.getElementById("test-title").innerText = data.title;
+  document.getElementById("passage").innerHTML = data.passage;
 
-  timerInterval = setInterval(() => {
-    const minutes = String(Math.floor(timeLeft / 60)).padStart(2, "0");
-    const seconds = String(timeLeft % 60).padStart(2, "0");
-    timerEl.textContent = `${minutes}:${seconds}`;
-
-    if (timeLeft <= 0) {
-      clearInterval(timerInterval);
-      submitAnswers();
-    }
-    timeLeft--;
-  }, 1000);
+  renderQuestions(data.questions);
+  startTimer(data.time);
+  enableHighlight();
 }
 
-/***********************
- * RENDER PASSAGE
- ***********************/
-function renderPassage(text) {
-  const passageEl = document.getElementById("passage");
-  passageEl.innerHTML = "";
-
-  text.forEach(p => {
-    const para = document.createElement("p");
-    para.textContent = p;
-    passageEl.appendChild(para);
-  });
-}
-
-/***********************
- * HIGHLIGHT (TEXT SELECTION)
- ***********************/
-document.addEventListener("mouseup", () => {
-  const selection = window.getSelection();
-  if (!selection || selection.toString().trim() === "") return;
-
-  const range = selection.getRangeAt(0);
-  const span = document.createElement("span");
-  span.className = "highlight";
-  range.surroundContents(span);
-  selection.removeAllRanges();
-});
-
-/***********************
- * RENDER QUESTIONS
- ***********************/
+// =====================================================
+// RENDER QUESTIONS
+// =====================================================
 function renderQuestions(questions) {
-  const container = document.getElementById("questions");
-  container.innerHTML = "";
+  const qBox = document.getElementById("questions");
+  qBox.innerHTML = "";
 
-  questions.forEach((q, index) => {
-    const qBox = document.createElement("div");
-    qBox.className = "question-box";
+  questions.forEach(q => {
+    const div = document.createElement("div");
+    div.className = "question";
 
-    const title = document.createElement("h4");
-    title.textContent = `${index + 1}. ${q.question}`;
-    qBox.appendChild(title);
+    let html = `<p><b>${q.id}.</b> ${q.text}</p>`;
 
-    // TRUE / FALSE / NOT GIVEN
-    if (q.type === "single") {
-      q.options.forEach(opt => {
-        const label = document.createElement("label");
-        label.innerHTML = `
-          <input type="radio" name="q${index}" value="${opt}">
-          ${opt}
-        `;
-        qBox.appendChild(label);
-      });
+    // PARAGRAPH MATCH
+    if (q.type === "paragraph") {
+      html += `<input type="text" data-id="${q.id}" class="answer-input" />`;
     }
 
-    // CHECKBOX WITH LIMIT
-    if (q.type === "multiple") {
-      q.options.forEach(opt => {
-        const label = document.createElement("label");
-        label.innerHTML = `
-          <input type="checkbox" name="q${index}" value="${opt}">
-          ${opt}
-        `;
-        qBox.appendChild(label);
-      });
-
-      qBox.addEventListener("change", () => {
-        const checked = qBox.querySelectorAll("input[type=checkbox]:checked");
-        if (checked.length > q.limit) {
-          checked[checked.length - 1].checked = false;
-        }
-      });
-    }
-
-    // INPUT (ONE WORD ONLY)
+    // INPUT (ONE WORD)
     if (q.type === "input") {
-      const input = document.createElement("input");
-      input.type = "text";
-      input.placeholder = "Write ONE WORD ONLY";
-      input.dataset.index = index;
-      qBox.appendChild(input);
+      html += `<input type="text" data-id="${q.id}" class="answer-input" />`;
     }
 
-    container.appendChild(qBox);
+    // MULTIPLE CHOICE (LIMITED)
+    if (q.type === "multi") {
+      Object.keys(q.options).forEach(k => {
+        html += `
+          <label>
+            <input type="checkbox"
+              name="q${q.id}"
+              value="${k}"
+              data-limit="${q.limit}">
+            ${k}. ${q.options[k]}
+          </label><br>
+        `;
+      });
+    }
+
+    div.innerHTML = html;
+    qBox.appendChild(div);
+  });
+
+  applyCheckboxLimits();
+}
+
+// =====================================================
+// CHECKBOX LIMIT
+// =====================================================
+function applyCheckboxLimits() {
+  document.querySelectorAll("input[type=checkbox]").forEach(cb => {
+    cb.addEventListener("change", () => {
+      const name = cb.name;
+      const limit = parseInt(cb.dataset.limit);
+      const checked = document.querySelectorAll(`input[name="${name}"]:checked`);
+      if (checked.length > limit) cb.checked = false;
+    });
   });
 }
 
-/***********************
- * SUBMIT & CHECK ANSWERS
- ***********************/
-function submitAnswers() {
-  clearInterval(timerInterval);
+// =====================================================
+// SUBMIT ANSWERS
+// =====================================================
+document.getElementById("submitBtn").addEventListener("click", () => {
   score = 0;
+  const data = window.readingData;
 
-  testData.questions.forEach((q, index) => {
-    const qBox = document.querySelectorAll(".question-box")[index];
-
-    // SINGLE
-    if (q.type === "single") {
-      const selected = qBox.querySelector("input:checked");
-      if (selected && selected.value === q.answer) {
+  data.questions.forEach(q => {
+    // TEXT INPUT
+    if (q.type === "input" || q.type === "paragraph") {
+      const input = document.querySelector(`input[data-id="${q.id}"]`);
+      if (
+        input &&
+        input.value.trim().toLowerCase() === q.answer.toLowerCase()
+      ) {
         score++;
-        qBox.classList.add("correct");
-      } else {
-        qBox.classList.add("wrong");
+        input.classList.add("correct");
+      } else if (input) {
+        input.classList.add("wrong");
       }
     }
 
-    // MULTIPLE
-    if (q.type === "multiple") {
-      const selected = Array.from(
-        qBox.querySelectorAll("input:checked")
+    // MULTI
+    if (q.type === "multi") {
+      const checked = Array.from(
+        document.querySelectorAll(`input[name="q${q.id}"]:checked`)
       ).map(i => i.value);
 
       const correct =
-        selected.length === q.answer.length &&
-        selected.every(v => q.answer.includes(v));
+        checked.length === q.answer.length &&
+        checked.every(v => q.answer.includes(v));
 
-      if (correct) {
-        score++;
-        qBox.classList.add("correct");
-      } else {
-        qBox.classList.add("wrong");
-      }
-    }
+      if (correct) score++;
 
-    // INPUT
-    if (q.type === "input") {
-      const input = qBox.querySelector("input");
-      if (
-        input.value.trim().toLowerCase() ===
-        q.answer.trim().toLowerCase()
-      ) {
-        score++;
-        qBox.classList.add("correct");
-      } else {
-        qBox.classList.add("wrong");
-      }
+      checked.forEach(v => {
+        const el = document.querySelector(
+          `input[name="q${q.id}"][value="${v}"]`
+        );
+        el.parentElement.style.color = correct ? "green" : "red";
+      });
     }
   });
 
-  document.getElementById("score").textContent = score;
-}
-
-/***********************
- * RESET
- ***********************/
-function resetTest() {
-  location.reload();
-}
-
-/***********************
- * INIT (DATA LOADED)
- ***********************/
-window.addEventListener("load", () => {
-  if (!window.testData) {
-    alert("Test data not found!");
-    return;
-  }
-
-  renderPassage(testData.passage);
-  renderQuestions(testData.questions);
-  startTimer();
-
-  document
-    .getElementById("submitBtn")
-    .addEventListener("click", submitAnswers);
-
-  document
-    .getElementById("resetBtn")
-    .addEventListener("click", resetTest);
+  document.getElementById("score").innerText = score;
+  clearInterval(timerInterval);
 });
+
+// =====================================================
+// TIMER (20:00)
+// =====================================================
+function startTimer(minutes) {
+  timeLeft = minutes * 60;
+  updateTimer();
+
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    updateTimer();
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      alert("Time is up!");
+    }
+  }, 1000);
+}
+
+function updateTimer() {
+  const m = Math.floor(timeLeft / 60);
+  const s = timeLeft % 60;
+  document.getElementById("timer").innerText =
+    `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+}
+
+// =====================================================
+// TEXT HIGHLIGHT (SELECTION)
+// =====================================================
+function enableHighlight() {
+  document.getElementById("passage").addEventListener("mouseup", () => {
+    const selection = window.getSelection();
+    if (!selection || selection.toString().length === 0) return;
+
+    const range = selection.getRangeAt(0);
+    const span = document.createElement("span");
+    span.className = "highlight";
+    range.surroundContents(span);
+    selection.removeAllRanges();
+  });
+}
