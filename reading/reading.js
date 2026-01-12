@@ -81,27 +81,4 @@ function checkAnswers() {
     }
   });
 
-  // CHECKBOX QUESTIONS
-  document.querySelectorAll("div[data-question]").forEach(div => {
-    const qNum = div.dataset.question;
-    const correctAns = answerKey[qNum];
-    if (!Array.isArray(correctAns)) return;
-
-    const checked = [...div.querySelectorAll("input:checked")]
-      .map(i => i.value)
-      .sort();
-
-    if (
-      checked.length === correctAns.length &&
-      checked.every((v, i) => v === correctAns.sort()[i])
-    ) {
-      correct++;
-      div.style.border = "2px solid green";
-    } else {
-      div.style.border = "2px solid red";
-    }
-  });
-
-  document.getElementById("result").innerHTML =
-    `<h3>Correct answers: ${correct}</h3>`;
-}
+ 
