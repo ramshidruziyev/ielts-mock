@@ -3,58 +3,72 @@
 <head>
   <meta charset="UTF-8" />
   <title>IELTS Reading Test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- CSS -->
   <link rel="stylesheet" href="reading.css" />
-
-  <!-- Mobile friendly -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
 <body>
 
-<!-- ================= TOP BAR ================= -->
-<header class="reading-header">
-  <div class="header-left">
-    <span class="logo">📘 IELTS Reading</span>
-  </div>
-
-  <div class="header-right">
-    <span id="timer">20:00</span>
-  </div>
-</header>
-
-<!-- ================= MAIN LAYOUT ================= -->
-<main class="reading-container">
-
-  <!-- ===== PASSAGE (LEFT) ===== -->
-  <section class="passage-section">
-    <div id="passage" class="passage-content">
-      <!-- p001.js dan passage shu yerga keladi -->
-      <p class="loading">Loading passage...</p>
+  <!-- ===== TOP BAR ===== -->
+  <header class="top-bar">
+    <div class="top-left">
+      <span class="book-icon">📘</span>
+      <span class="title">IELTS Reading</span>
     </div>
-  </section>
 
-  <!-- ===== QUESTIONS (RIGHT) ===== -->
-  <section class="questions-section">
-    <div id="questions" class="questions-content">
-      <!-- p001.js dan questions shu yerga keladi -->
-      <p class="loading">Loading questions...</p>
+    <div class="top-right">
+      <span id="timer">20:00</span>
     </div>
-  </section>
+  </header>
 
-</main>
+  <!-- ===== MAIN LAYOUT ===== -->
+  <main class="reading-layout">
 
-<!-- ================= FOOTER ================= -->
-<footer class="reading-footer">
-  <button id="submitBtn" class="submit-btn">
-    Submit Answers
-  </button>
+    <!-- ===== PASSAGE (LEFT) ===== -->
+    <section class="passage-section">
+      <div class="passage-box" id="passage">
+        <!-- p001.js dan passage shu yerga tushadi -->
+      </div>
+    </section>
 
-  <div id="result" class="result-box"></div>
-</footer>
+    <!-- ===== QUESTIONS (RIGHT) ===== -->
+    <section class="questions-section">
+      <div class="questions-box" id="questions">
+        <!-- p001.js dan questions shu yerga tushadi -->
+      </div>
+    </section>
 
-<!-- ================= JS ================= -->
-<script src="reading.js"></script>
+  </main>
+
+  <!-- ===== FOOTER ACTIONS ===== -->
+  <footer class="bottom-bar">
+    <div class="score-box">
+      Score: <span id="score">0</span>
+    </div>
+
+    <div class="actions">
+      <button id="resetBtn" class="btn secondary">Reset</button>
+      <button id="submitBtn" class="btn primary">Submit</button>
+    </div>
+  </footer>
+
+  <!-- ===== DATA + LOGIC ===== -->
+  <!-- URL ?id=p001 orqali yuklanadi -->
+  <script src="data/index.js"></script>
+  <script src="" id="testData"></script>
+
+  <!-- Main JS -->
+  <script src="reading.js"></script>
+
+  <!-- ===== DYNAMIC DATA LOADER ===== -->
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const testId = params.get("id") || "p001";
+
+    const script = document.getElementById("testData");
+    script.src = `data/${testId}.js`;
+  </script>
 
 </body>
 </html>
