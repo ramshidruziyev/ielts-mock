@@ -1,25 +1,60 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Reading Test</title>
-  <link rel="stylesheet" href="reading.css">
+  <meta charset="UTF-8" />
+  <title>IELTS Reading Test</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="reading.css" />
+
+  <!-- Mobile friendly -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
 <body>
 
-<div class="top">
-  <h3 id="title"></h3>
-  <span id="timer"></span>
-</div>
+<!-- ================= TOP BAR ================= -->
+<header class="reading-header">
+  <div class="header-left">
+    <span class="logo">📘 IELTS Reading</span>
+  </div>
 
-<div class="container">
-  <div id="passage" class="left"></div>
-  <div id="questions" class="right"></div>
-</div>
+  <div class="header-right">
+    <span id="timer">20:00</span>
+  </div>
+</header>
 
-<button onclick="submitTest()">Submit</button>
-<p id="result"></p>
+<!-- ================= MAIN LAYOUT ================= -->
+<main class="reading-container">
 
-<script src="data/p001.js"></script>
+  <!-- ===== PASSAGE (LEFT) ===== -->
+  <section class="passage-section">
+    <div id="passage" class="passage-content">
+      <!-- p001.js dan passage shu yerga keladi -->
+      <p class="loading">Loading passage...</p>
+    </div>
+  </section>
+
+  <!-- ===== QUESTIONS (RIGHT) ===== -->
+  <section class="questions-section">
+    <div id="questions" class="questions-content">
+      <!-- p001.js dan questions shu yerga keladi -->
+      <p class="loading">Loading questions...</p>
+    </div>
+  </section>
+
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="reading-footer">
+  <button id="submitBtn" class="submit-btn">
+    Submit Answers
+  </button>
+
+  <div id="result" class="result-box"></div>
+</footer>
+
+<!-- ================= JS ================= -->
 <script src="reading.js"></script>
+
 </body>
 </html>
