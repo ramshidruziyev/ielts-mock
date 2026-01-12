@@ -1,33 +1,51 @@
-// reading/data/index.js
-// =====================
-// READING TESTS LIST
-// =====================
+/* =====================================================
+   IELTS Reading Tests – Index
+   Bu fayl reading/index.html tomonidan o‘qiladi
+   Yangi test qo‘shish juda oson
+===================================================== */
+
+/*
+  QOIDALAR:
+  - id → p001, p002, p003 ...
+  - title → test nomi
+*/
 
 const readingTests = [
   {
     id: "p001",
-    title: "Museum Blockbuster",
-    free: true
+    title: "Museum Blockbuster"
   }
-  // Keyin p002, p003 shu yerga qo‘shiladi
+
+  // 🔽 YANGI TEST QO‘SHISH NAMUNASI
+  // {
+  //   id: "p002",
+  //   title: "Sleeping on the Job"
+  // }
 ];
 
-// =====================
-// RENDER LIST
-// =====================
+/* =====================================================
+   RO‘YXATNI SAHIFAGA CHIQARISH
+===================================================== */
+
 const list = document.getElementById("list");
+
+if (!list) {
+  console.error("❌ #list elementi topilmadi (reading/index.html)");
+}
 
 readingTests.forEach(test => {
   const card = document.createElement("div");
-  card.className = "card";
+  card.className = "test-card";
 
   card.innerHTML = `
-    <div class="badge">${test.free ? "Free" : "Paid"}</div>
-    <div class="title">${test.title}</div>
-    <button class="start-btn">▶ Start</button>
+    <div class="badge">Free</div>
+    <div class="test-title">${test.title}</div>
+    <button class="start-btn">
+      ▶ Start
+    </button>
   `;
 
-  card.querySelector("button").onclick = () => {
+  card.querySelector(".start-btn").onclick = () => {
     window.location.href = `reading.html?id=${test.id}`;
   };
 
