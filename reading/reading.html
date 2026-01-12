@@ -25,16 +25,12 @@
 
     <!-- PASSAGE -->
     <section class="panel passage-panel">
-      <div id="passage">
-        <!-- JS bu yerga MATN joylaydi -->
-      </div>
+      <div id="passage"></div>
     </section>
 
     <!-- QUESTIONS -->
     <section class="panel questions-panel">
-      <div id="questions">
-        <!-- JS bu yerga SAVOLLAR joylaydi -->
-      </div>
+      <div id="questions"></div>
     </section>
 
   </main>
@@ -51,8 +47,29 @@
     </div>
   </footer>
 
+  <!-- ===== LOAD READING DATA FIRST ===== -->
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id") || "p001";
+
+    const dataScript = document.createElement("script");
+    dataScript.src = "data/" + id + ".js";
+
+    dataScript.onload = function () {
+      console.log("✅ Reading data loaded:", window.readingData);
+      if (typeof initReading === "function") {
+        initReading();
+      }
+    };
+
+    dataScript.onerror = function () {
+      alert("Reading data yuklanmadi!");
+    };
+
+    document.body.appendChild(dataScript);
+  </script>
+
   <!-- ===== MAIN LOGIC ===== -->
-  <!-- FAQAT BITTA JS -->
   <script src="reading.js"></script>
 
 </body>
