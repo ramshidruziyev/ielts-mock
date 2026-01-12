@@ -1,5 +1,9 @@
-window.READING_TESTS = [
-  { id: "p001", title: "Museum Blockbuster" }
-  // keyin:
-  // { id: "p002", title: "Another Reading Passage" }
+// reading/data/index.js
+
+window.readingTests = [
+  {
+    id: "p001",
+    number: 1,
+    title: "Museum Blockbuster"
+  }
 ];
