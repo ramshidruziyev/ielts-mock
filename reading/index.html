@@ -1,48 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>IELTS Reading Tests</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="reading.css">
+  <link rel="stylesheet" href="reading.css" />
 </head>
 <body>
 
-  <header class="top-bar">
-    📘 IELTS Reading Tests
-  </header>
+<header class="top-bar">
+  📘 IELTS Reading Tests
+</header>
 
-  <main id="tests" class="tests-list">
-    <p>Loading tests...</p>
-  </main>
+<main class="tests-list" id="testsList">
+  <!-- JS orqali yuklanadi -->
+</main>
 
-  <!-- DATA FILE -->
-  <script src="./data/index.js"></script>
+<script src="data/index.js"></script>
+<script>
+  const container = document.getElementById("testsList");
 
-  <!-- RENDER LOGIC -->
-  <script>
-    const container = document.getElementById("tests");
-
-    // DEBUG (ixtiyoriy, lekin foydali)
-    console.log("readingTests:", window.readingTests);
-
-    if (!Array.isArray(window.readingTests)) {
-      container.innerHTML = "<p>No reading tests found.</p>";
-    } else {
-      container.innerHTML = "";
-      window.readingTests.forEach(test => {
-        const card = document.createElement("div");
-        card.className = "test-card";
-        card.innerHTML = `
-          <h3>Passage ${test.number}: ${test.title}</h3>
-          <a class="start-btn" href="reading.html?id=${test.id}">
-            Start
-          </a>
-        `;
-        container.appendChild(card);
-      });
-    }
-  </script>
+  if (!window.readingTests || window.readingTests.length === 0) {
+    container.innerHTML = "<p>No reading tests found.</p>";
+  } else {
+    window.readingTests.forEach(test => {
+      const card = document.createElement("div");
+      card.className = "test-card";
+      card.innerHTML = `
+        <div class="badge">FREE</div>
+        <h3>${test.title}</h3>
+        <p>Passage ${test.passage}</p>
+        <a class="start-btn" href="reading.html?id=${test.id}">▶ Start</a>
+      `;
+      container.appendChild(card);
+    });
+  }
+</script>
 
 </body>
 </html>
