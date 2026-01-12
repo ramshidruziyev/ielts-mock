@@ -53,3 +53,55 @@ function startTimer(minutes) {
     time--;
   }, 1000);
 }
+// ================= SUBMIT & CHECK =================
+document.getElementById("submitBtn").onclick = checkAnswers;
+
+function checkAnswers() {
+  const answerKey = window.readingData.answers;
+  if (!answerKey) {
+    alert("Answer key topilmadi");
+    return;
+  }
+
+  let correct = 0;
+
+  // TEXT INPUTS
+  document.querySelectorAll("input[type='text']").forEach((input, index) => {
+    const qNum = index + 1;
+    if (!answerKey[qNum]) return;
+
+    const user = input.value.trim().toLowerCase();
+    const correctAns = answerKey[qNum].toLowerCase();
+
+    if (user === correctAns) {
+      correct++;
+      input.style.border = "2px solid green";
+    } else {
+      input.style.border = "2px solid red";
+    }
+  });
+
+  // CHECKBOX QUESTIONS
+  document.querySelectorAll("div[data-question]").forEach(div => {
+    const qNum = div.dataset.question;
+    const correctAns = answerKey[qNum];
+    if (!Array.isArray(correctAns)) return;
+
+    const checked = [...div.querySelectorAll("input:checked")]
+      .map(i => i.value)
+      .sort();
+
+    if (
+      checked.length === correctAns.length &&
+      checked.every((v, i) => v === correctAns.sort()[i])
+    ) {
+      correct++;
+      div.style.border = "2px solid green";
+    } else {
+      div.style.border = "2px solid red";
+    }
+  });
+
+  document.getElementById("result").innerHTML =
+    `<h3>Correct answers: ${correct}</h3>`;
+}
