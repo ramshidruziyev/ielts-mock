@@ -1,5 +1,5 @@
 /* =====================================================
-   IELTS READING – MAIN LOGIC (FINAL)
+   IELTS READING – MAIN LOGIC (FINAL, FIXED)
    Compatible with p001.js
    Works on GitHub Pages
 ===================================================== */
@@ -89,7 +89,6 @@ function renderSimpleQuestion(q) {
 function renderMultiGroup(group) {
   const wrapper = document.createElement("div");
   wrapper.className = "question-group";
-  wrapper.dataset.limit = group.limit;
 
   wrapper.innerHTML = `<p class="instruction">${group.instruction}</p>`;
 
@@ -118,7 +117,7 @@ function renderMultiGroup(group) {
 }
 
 /* =====================
-   CHECKBOX LIMIT (MUHIM!)
+   CHECKBOX LIMIT (STRICT)
 ===================== */
 document.addEventListener("change", e => {
   if (e.target.type !== "checkbox") return;
@@ -148,7 +147,7 @@ function submitAnswers() {
 
     div.classList.remove("correct", "wrong");
 
-    // TEXT / PARAGRAPH
+    /* TEXT / PARAGRAPH */
     if (q.type === "input" || q.type === "paragraph") {
       const user = div.querySelector("input").value.trim().toLowerCase();
       if (user === q.answer.toLowerCase()) {
@@ -159,7 +158,7 @@ function submitAnswers() {
       }
     }
 
-    // MULTI
+    /* MULTI */
     if (Array.isArray(q.answer)) {
       const checked = [...div.querySelectorAll("input:checked")].map(i => i.value);
       const limit = Number(div.dataset.limit);
