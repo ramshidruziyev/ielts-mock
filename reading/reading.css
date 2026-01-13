@@ -75,7 +75,7 @@ body {
 ===================================================== */
 #passage p {
   margin-bottom: 16px;
-  line-height: 1.65;
+  line-height: 1.7;
   font-size: 15px;
 }
 
@@ -86,6 +86,17 @@ body {
 /* =====================================================
    QUESTIONS
 ===================================================== */
+.question-group {
+  margin-bottom: 18px;
+}
+
+.instruction {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #374151;
+}
+
 .question {
   background: #ffffff;
   border: 1px solid #e5e7eb;
@@ -97,12 +108,13 @@ body {
 .question p {
   font-size: 14px;
   margin-bottom: 8px;
+  font-weight: 500;
 }
 
 /* INPUT */
 .question input[type="text"] {
   width: 100%;
-  padding: 8px 10px;
+  padding: 9px 10px;
   border-radius: 6px;
   border: 1px solid #d1d5db;
   font-size: 14px;
@@ -114,11 +126,13 @@ body {
   font-size: 14px;
   margin-bottom: 6px;
   cursor: pointer;
+  user-select: none;
 }
 
 .question input[type="checkbox"],
 .question input[type="radio"] {
   margin-right: 6px;
+  accent-color: #2563eb;
 }
 
 /* =====================================================
@@ -129,9 +143,17 @@ body {
   background: #ecfdf5;
 }
 
+.question.correct p {
+  color: #166534;
+}
+
 .question.wrong {
   border: 2px solid #ef4444;
   background: #fef2f2;
+}
+
+.question.wrong p {
+  color: #991b1b;
 }
 
 /* =====================================================
@@ -162,7 +184,7 @@ body {
 }
 
 .actions button {
-  padding: 8px 16px;
+  padding: 8px 18px;
   border-radius: 8px;
   border: none;
   font-size: 14px;
