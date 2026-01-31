@@ -32,8 +32,9 @@ const readingTests = [
 
 const list = document.getElementById("list");
 
-// ❌ Hech qanday error yoki alert chiqarmaymiz
-if (!list) return;
+if (!list) {
+  console.error("❌ #list elementi topilmadi (reading/index.html)");
+}
 
 /* TEST KARTALARI */
 readingTests.forEach(test => {
@@ -49,7 +50,7 @@ readingTests.forEach(test => {
   `;
 
   card.querySelector(".start-btn").addEventListener("click", () => {
-    // TO‘G‘RI YO‘L
+    // MUHIM: to‘g‘ri yo‘l
     window.location.href = `reading.html?id=${test.id}`;
   });
 
