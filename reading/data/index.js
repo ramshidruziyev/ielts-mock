@@ -13,11 +13,15 @@ const readingTests = [
   {
     id: "p001",
     title: "Museum Blockbuster"
+  },
+  {
+    id: "p002",
+    title: "Australia’s Cane Toad Problem"
   }
 
   // 🔽 KEYIN QO‘SHISH OSON
   // {
-  //   id: "p002",
+  //   id: "p003",
   //   title: "Sleeping on the Job"
   // }
 ];
@@ -28,9 +32,8 @@ const readingTests = [
 
 const list = document.getElementById("list");
 
-if (!list) {
-  console.error("❌ #list elementi topilmadi (reading/index.html)");
-}
+// ❌ Hech qanday error yoki alert chiqarmaymiz
+if (!list) return;
 
 /* TEST KARTALARI */
 readingTests.forEach(test => {
@@ -46,7 +49,7 @@ readingTests.forEach(test => {
   `;
 
   card.querySelector(".start-btn").addEventListener("click", () => {
-    // MUHIM: to‘g‘ri yo‘l
+    // TO‘G‘RI YO‘L
     window.location.href = `reading.html?id=${test.id}`;
   });
 
