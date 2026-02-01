@@ -44,10 +44,11 @@
     <div class="actions">
       <button id="resetBtn">Reset</button>
       <button id="submitBtn">Submit</button>
+      <button id="reviewBtn">Review Answers</button>
     </div>
   </footer>
 
-  <!-- ===== LOAD READING DATA FIRST ===== -->
+  <!-- ===== LOAD READING DATA (SAFE) ===== -->
   <script>
     const params = new URLSearchParams(window.location.search);
     const id = params.get("id") || "p001";
@@ -57,13 +58,12 @@
 
     dataScript.onload = function () {
       console.log("✅ Reading data loaded:", window.readingData);
-      if (typeof initReading === "function") {
-        initReading();
-      }
+      // initReading() reading.js ichida o‘zi kutib ishga tushadi
     };
 
     dataScript.onerror = function () {
-      alert("Reading data yuklanmadi!");
+      console.warn("⚠️ Reading data yuklanmadi:", id);
+      // alert olib tashlandi (UX uchun)
     };
 
     document.body.appendChild(dataScript);
