@@ -1,7 +1,6 @@
 /* =====================================================
-   IELTS READING – MAIN LOGIC (FINAL, PRO)
-   Compatible with p001.js & p002.js
-   GitHub Pages safe
+   IELTS READING – MAIN LOGIC (FINAL, IELTS UX)
+   p001.js & p002.js compatible
 ===================================================== */
 
 /* =====================
@@ -19,12 +18,18 @@ const passageEl = document.getElementById("passage");
 const questionsEl = document.getElementById("questions");
 const scoreEl = document.getElementById("score");
 const timerEl = document.getElementById("timer");
+
 const resetBtn = document.getElementById("resetBtn");
 const submitBtn = document.getElementById("submitBtn");
-const reviewBtn = document.getElementById("reviewBtn");
+
+// MODAL ELEMENTS (reading.html dan)
+const resultModal = document.getElementById("resultModal");
+const resultScore = document.getElementById("resultScore");
+const closeResult = document.getElementById("closeResult");
+const reviewFromResult = document.getElementById("reviewFromResult");
 
 /* =====================
-   INIT (SAFE – WAIT FOR DATA)
+   INIT (WAIT FOR DATA)
 ===================== */
 function initReading() {
   if (!window.readingData) {
@@ -49,7 +54,7 @@ function renderPassage() {
 }
 
 /* =====================
-   QUESTIONS
+   QUESTIONS RENDER
 ===================== */
 function renderQuestions() {
   questionsEl.innerHTML = "";
@@ -135,101 +140,82 @@ function renderMultiGroup(group) {
 }
 
 /* =====================
-   CHECKBOX LIMIT
-===================== */
-document.addEventListener("change", e => {
-  if (e.target.type !== "checkbox") return;
-  const q = e.target.closest(".question");
-  if (!q) return;
-
-  const limit = Number(q.dataset.limit);
-  if (!limit) return;
-
-  const checked = q.querySelectorAll("input[type=checkbox]:checked");
-  if (checked.length > limit) e.target.checked = false;
-});
-
-/* =====================
-   SUBMIT
+   SUBMIT (ONLY SCORE)
 ===================== */
 function submitAnswers() {
   score = 0;
 
   document.querySelectorAll(".question").forEach(div => {
-    const id = div.dataset.id;
-    const q = findQuestion(id);
+    const q = findQuestion(div.dataset.id);
     if (!q) return;
 
-    div.classList.remove("correct", "wrong");
-
-    // INPUT / PARAGRAPH
     if (q.type === "input" || q.type === "paragraph") {
-      const inp = div.querySelector("input");
-      const user = inp.value.trim().toLowerCase();
-      if (user === q.answer.toLowerCase()) {
-        score++;
-        div.classList.add("correct");
-      } else {
-        div.classList.add("wrong");
-      }
+      const user = div.querySelector("input").value.trim().toLowerCase();
+      if (user === q.answer.toLowerCase()) score++;
     }
 
-    // TFNG
     if (q.type === "tfng") {
       const r = div.querySelector("input:checked");
-      if (r && r.value === q.answer) {
-        score++;
-        div.classList.add("correct");
-      } else {
-        div.classList.add("wrong");
-      }
+      if (r && r.value === q.answer) score++;
     }
 
-    // MULTI
     if (Array.isArray(q.answer)) {
       const checked = [...div.querySelectorAll("input:checked")].map(i => i.value);
       if (
         checked.length === q.answer.length &&
         checked.every(v => q.answer.includes(v))
-      ) {
-        score++;
-        div.classList.add("correct");
-      } else {
-        div.classList.add("wrong");
-      }
+      ) score++;
     }
   });
 
-  scoreEl.textContent = `${score} / ${data.questions.length}`;
+  resultScore.textContent = `${score} / ${data.questions.length}`;
+  resultModal.classList.remove("hidden");
 }
 
 /* =====================
    REVIEW ANSWERS
 ===================== */
 function reviewAnswers() {
+  resultModal.classList.add("hidden");
+
   document.querySelectorAll(".question").forEach(div => {
-    const id = div.dataset.id;
-    const q = findQuestion(id);
+    const q = findQuestion(div.dataset.id);
     if (!q) return;
 
     div.querySelectorAll("input").forEach(i => i.disabled = true);
 
-    if (div.classList.contains("correct")) {
-      addMark(div, true);
-    } else {
-      addMark(div, false, q.answer);
+    let correct = false;
+
+    if (q.type === "input" || q.type === "paragraph") {
+      const user = div.querySelector("input").value.trim().toLowerCase();
+      correct = user === q.answer.toLowerCase();
     }
+
+    if (q.type === "tfng") {
+      const r = div.querySelector("input:checked");
+      correct = r && r.value === q.answer;
+    }
+
+    if (Array.isArray(q.answer)) {
+      const checked = [...div.querySelectorAll("input:checked")].map(i => i.value);
+      correct =
+        checked.length === q.answer.length &&
+        checked.every(v => q.answer.includes(v));
+    }
+
+    div.classList.add(correct ? "correct" : "wrong");
+    addMark(div, correct, q.answer);
   });
 }
 
-function addMark(div, ok, answer = "") {
+function addMark(div, ok, ans) {
   if (div.querySelector(".answer-mark")) return;
 
   const d = document.createElement("div");
   d.className = "answer-mark";
   d.innerHTML = ok
     ? "✅ Correct"
-    : `❌ Incorrect<br><small>Correct: ${Array.isArray(answer) ? answer.join(", ") : answer}</small>`;
+    : `❌ Incorrect<br><small>Correct: ${Array.isArray(ans) ? ans.join(", ") : ans}</small>`;
   div.appendChild(d);
 }
 
@@ -279,10 +265,7 @@ function startTimer() {
   timer = setInterval(() => {
     timeLeft--;
     updateTimer();
-    if (timeLeft <= 0) {
-      clearInterval(timer);
-      submitAnswers();
-    }
+    if (timeLeft <= 0) submitAnswers();
   }, 1000);
 }
 
@@ -317,7 +300,8 @@ function enableHighlighting() {
 ===================== */
 submitBtn.addEventListener("click", submitAnswers);
 resetBtn.addEventListener("click", resetTest);
-reviewBtn.addEventListener("click", reviewAnswers);
+closeResult.addEventListener("click", () => resultModal.classList.add("hidden"));
+reviewFromResult.addEventListener("click", reviewAnswers);
 
 /* =====================
    START
