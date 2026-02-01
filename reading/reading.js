@@ -1,6 +1,6 @@
 /* =====================================================
-   IELTS READING – MAIN LOGIC (FINAL, FIXED)
-   Compatible with p001.js
+   IELTS READING – MAIN LOGIC (FINAL, EXTENDED)
+   Compatible with p001.js AND p002.js
    Works on GitHub Pages
 ===================================================== */
 
@@ -54,16 +54,39 @@ function renderQuestions() {
   questionsEl.innerHTML = "";
 
   data.questions.forEach(q => {
-    if (q.type === "paragraph" || q.type === "input") {
-      renderSimpleQuestion(q);
+
+    /* ---------- INSTRUCTION ---------- */
+    if (q.type === "instruction") {
+      const div = document.createElement("div");
+      div.className = "instruction";
+      div.innerHTML = `<pre>${q.text}</pre>`;
+      questionsEl.appendChild(div);
+      return;
     }
 
+    /* ---------- SIMPLE (INPUT / PARAGRAPH) ---------- */
+    if (q.type === "input" || q.type === "paragraph") {
+      renderSimpleQuestion(q);
+      return;
+    }
+
+    /* ---------- TRUE / FALSE / NOT GIVEN ---------- */
+    if (q.type === "tfng") {
+      renderTFNG(q);
+      return;
+    }
+
+    /* ---------- MULTI GROUP ---------- */
     if (q.type === "multi-group") {
       renderMultiGroup(q);
+      return;
     }
   });
 }
 
+/* =====================
+   SIMPLE QUESTION
+===================== */
 function renderSimpleQuestion(q) {
   const div = document.createElement("div");
   div.className = "question";
@@ -84,7 +107,25 @@ function renderSimpleQuestion(q) {
 }
 
 /* =====================
-   MULTI GROUP (9–10, 11–13)
+   TFNG (8–13)
+===================== */
+function renderTFNG(q) {
+  const div = document.createElement("div");
+  div.className = "question";
+  div.dataset.id = q.id;
+
+  div.innerHTML = `
+    <p><b>${q.id}.</b> ${q.text}</p>
+    <label><input type="radio" name="q${q.id}" value="TRUE"> TRUE</label><br>
+    <label><input type="radio" name="q${q.id}" value="FALSE"> FALSE</label><br>
+    <label><input type="radio" name="q${q.id}" value="NOT GIVEN"> NOT GIVEN</label>
+  `;
+
+  questionsEl.appendChild(div);
+}
+
+/* =====================
+   MULTI GROUP
 ===================== */
 function renderMultiGroup(group) {
   const wrapper = document.createElement("div");
@@ -117,7 +158,7 @@ function renderMultiGroup(group) {
 }
 
 /* =====================
-   CHECKBOX LIMIT (STRICT)
+   CHECKBOX LIMIT
 ===================== */
 document.addEventListener("change", e => {
   if (e.target.type !== "checkbox") return;
@@ -147,10 +188,21 @@ function submitAnswers() {
 
     div.classList.remove("correct", "wrong");
 
-    /* TEXT / PARAGRAPH */
+    /* INPUT / PARAGRAPH */
     if (q.type === "input" || q.type === "paragraph") {
       const user = div.querySelector("input").value.trim().toLowerCase();
       if (user === q.answer.toLowerCase()) {
+        score++;
+        div.classList.add("correct");
+      } else {
+        div.classList.add("wrong");
+      }
+    }
+
+    /* TFNG */
+    if (q.type === "tfng") {
+      const checked = div.querySelector("input:checked");
+      if (checked && checked.value === q.answer) {
         score++;
         div.classList.add("correct");
       } else {
