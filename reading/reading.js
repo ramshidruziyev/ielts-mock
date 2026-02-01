@@ -1,5 +1,5 @@
 /* =====================================================
-   IELTS READING – MAIN LOGIC (FINAL, IELTS UX)
+   IELTS READING – MAIN LOGIC (FINAL, IELTS UX FIXED)
    p001.js & p002.js compatible
 ===================================================== */
 
@@ -16,13 +16,12 @@ let timeLeft = 20 * 60;
 ===================== */
 const passageEl = document.getElementById("passage");
 const questionsEl = document.getElementById("questions");
-const scoreEl = document.getElementById("score");
 const timerEl = document.getElementById("timer");
 
 const resetBtn = document.getElementById("resetBtn");
 const submitBtn = document.getElementById("submitBtn");
 
-// MODAL ELEMENTS (reading.html dan)
+// MODAL
 const resultModal = document.getElementById("resultModal");
 const resultScore = document.getElementById("resultScore");
 const closeResult = document.getElementById("closeResult");
@@ -140,7 +139,24 @@ function renderMultiGroup(group) {
 }
 
 /* =====================
-   SUBMIT (ONLY SCORE)
+   CHECKBOX LIMIT (IMPORTANT)
+===================== */
+document.addEventListener("change", e => {
+  if (e.target.type !== "checkbox") return;
+  const q = e.target.closest(".question");
+  if (!q) return;
+
+  const limit = Number(q.dataset.limit);
+  if (!limit) return;
+
+  const checked = q.querySelectorAll("input[type=checkbox]:checked");
+  if (checked.length > limit) {
+    e.target.checked = false;
+  }
+});
+
+/* =====================
+   SUBMIT (ONLY SCORE + MODAL)
 ===================== */
 function submitAnswers() {
   score = 0;
@@ -173,7 +189,7 @@ function submitAnswers() {
 }
 
 /* =====================
-   REVIEW ANSWERS
+   REVIEW ANSWERS (ONLY AFTER MODAL)
 ===================== */
 function reviewAnswers() {
   resultModal.classList.add("hidden");
@@ -215,7 +231,9 @@ function addMark(div, ok, ans) {
   d.className = "answer-mark";
   d.innerHTML = ok
     ? "✅ Correct"
-    : `❌ Incorrect<br><small>Correct: ${Array.isArray(ans) ? ans.join(", ") : ans}</small>`;
+    : `❌ Incorrect<br><small>Correct: ${
+        Array.isArray(ans) ? ans.join(", ") : ans
+      }</small>`;
   div.appendChild(d);
 }
 
@@ -238,8 +256,6 @@ function findQuestion(id) {
 ===================== */
 function resetTest() {
   clearInterval(timer);
-  score = 0;
-  scoreEl.textContent = "0";
 
   document.querySelectorAll("input").forEach(i => {
     i.disabled = false;
