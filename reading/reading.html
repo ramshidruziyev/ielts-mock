@@ -44,11 +44,23 @@
     <div class="actions">
       <button id="resetBtn">Reset</button>
       <button id="submitBtn">Submit</button>
-      <button id="reviewBtn">Review Answers</button>
     </div>
   </footer>
 
-  <!-- ===== LOAD READING DATA (SAFE) ===== -->
+  <!-- ===== RESULT MODAL (SUBMIT DAN KEYIN) ===== -->
+  <div id="resultModal" class="result-modal hidden">
+    <div class="result-box">
+      <h3>Test Results</h3>
+      <p id="resultScore">0 / 13</p>
+
+      <div class="result-actions">
+        <button id="closeResult">Close</button>
+        <button id="reviewFromResult">Review Answers</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== LOAD READING DATA ===== -->
   <script>
     const params = new URLSearchParams(window.location.search);
     const id = params.get("id") || "p001";
@@ -56,14 +68,12 @@
     const dataScript = document.createElement("script");
     dataScript.src = "data/" + id + ".js";
 
-    dataScript.onload = function () {
+    dataScript.onload = () => {
       console.log("✅ Reading data loaded:", window.readingData);
-      // initReading() reading.js ichida o‘zi kutib ishga tushadi
     };
 
-    dataScript.onerror = function () {
+    dataScript.onerror = () => {
       console.warn("⚠️ Reading data yuklanmadi:", id);
-      // alert olib tashlandi (UX uchun)
     };
 
     document.body.appendChild(dataScript);
