@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Panel – Export Reading</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="font-family: Arial; padding:40px;">
+
+  <h2>Reading Export Panel</h2>
+
+  <label>Select Test:</label>
+  <select id="testSelect">
+    <option value="p001">P001</option>
+    <option value="p002">P002</option>
+  </select>
+
+  <button onclick="loadTest()">Load Test</button>
+
+  <hr><br>
+
+  <button onclick="exportSimple()">Export Simple HTML</button>
+  <button onclick="exportInteractive()">Export Interactive HTML</button>
+  <button onclick="exportPrint()">Export Print Version</button>
+
+  <script src="export.js"></script>
+</body>
+</html>
